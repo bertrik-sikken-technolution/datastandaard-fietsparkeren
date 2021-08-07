@@ -35,7 +35,7 @@ Indien geen `surveyId` is gegeven, maakt de server zelf een id en geeft deze ter
 
 
 ##### Stap 3: koppel statische data aan bestaand onderzoek
-`POST /staticsection` [Body](./examples/API3/requests/POST_static_section.json)  
+`POST /static` [Body](./examples/API3/requests/POST_static_section.json)  
 <pre class='example json' title="Body" data-include='../examples/API3/requests/POST_static_section.json' data-include-format='text'></pre>  
 [Response](./examples/API4/POST_static_section.json)  - In geval van een succesvolle opslag, bevat de response het opgeslagen object.  
 
@@ -46,7 +46,7 @@ Als er al een sectie met hetzelfde `id` bestaat, krijgt de response code 409 (Co
 Het is niet verplicht veld `id` mee te geven in de request. Als er geen `id` gegeven is, wordt deze door de API gegenereerd en is deze zichtbaar in de respons, dat immers het volledig opgeslagen object bevat.
 
 ##### Stap 3: Sla losse metingen op
-`POST /dynamicdata` [Body](./examples/API3/requests/POST_dynamic_data.json)
+`POST /dynamic` [Body](./examples/API3/requests/POST_dynamic_data.json)
 
 <pre class='example json' title="Body" data-include='../examples/API3/requests/POST_dynamic_data.json' data-include-format='text'></pre>
 
@@ -56,7 +56,7 @@ Zonder het veld surveyId worden de data niet gekoppeld aan een onderzoek en zull
 Je kunt dus zowel dynamische als statische data afzonderlijk koppelen aan een onderzoek.   
    
 Dynamische data kan sterk gecomprimeerd worden door alleen de totalen op te slaan. Dit zal in de praktijk vaak voorkomen.  
-`POST /dynamicdata` [Body met een alleen totalen](./examples/API3/requests/POST_compressed_dynamic_section.json)  
+`POST /dynamic` [Body met een alleen totalen](./examples/API3/requests/POST_compressed_dynamic_section.json)  
 
 <pre class='example json' title="Body met een alleen totalen" data-include='../examples/API3/requests/POST_compressed_dynamic_section.json' data-include-format='text'></pre>
 
@@ -67,21 +67,21 @@ Dynamische data kan sterk gecomprimeerd worden door alleen de totalen op te slaa
 <pre class='example json' data-include='../examples/API4/GET_survey.json' data-include-format='text'></pre>
 
 ##### Ophalen van de statische data van een bepaald onderzoek
-`GET /staticdata?surveyId=0202_2020`  
+`GET /static?surveyId=0202_2020`  
 [Response](./examples/API4/GET_static.json)    
 
 <pre class='example json' data-include='../examples/API4/GET_static.json' data-include-format='text'></pre>
 
 
 ##### Ophalen van de volledige dynamische data van een bepaald onderzoek
-`GET /dynamicdata?surveyId=0202_2020&depth=4`  
+`GET /dynamic?surveyId=0202_2020&depth=4`  
 [Response](./examples/API4/GET_dynamic_depth4.json)  
 
 <pre class='example json' data-include='../examples/API4/GET_dynamic_depth4.json' data-include-format='text'></pre>
 
 
 ##### Ophalen van de beknopte dynamische data van een bepaald onderzoek
-`GET /dynamicdata?surveyId=0202_2020`  
+`GET /dynamic?surveyId=0202_2020`  
 <pre class='example json' data-include='../examples/API4/GET_dynamic_depth1.json' data-include-format='text'></pre>
 
 
@@ -89,21 +89,21 @@ De default-waarde voor depth = 1, dus daarom wordt alle data platgeslagen op de 
 Alleen dynamische data, want de parameter *data* is niet gegeven en de defaultwaarde is 'dynamic'.  
 
 ##### Opvragen van data van een bepaalde sectie in een gegeven periode
-`GET /dynamicdata?sectionId=arnhem_ketelstraat_oneven&startDate=2020-11-23T0:00:00&endDate=2020-11-24T0:00:00`   
+`GET /dynamic?sectionId=arnhem_ketelstraat_oneven&startDate=2020-11-23T0:00:00&endDate=2020-11-24T0:00:00`   
 [Response](./examples/API4/GET_dynamic_depth1_single_section.json)  
 
 <pre class='example json' data-include='../examples/API4/GET_dynamic_depth1_single_section.json' data-include-format='text'></pre>
 
 
 ##### Opvragen van statische data in een bepaald gebied, in een cirkel met straat 1km vanaf een gegeven punt
-`GET /dynamicdata?geoPoint=5.90802,51.98173,1000`  
+`GET /dynamic?geoPoint=5.90802,51.98173,1000`  
 [Response](./examples/API4/GET_static.json)  
 
 <pre class='example json' data-include='../examples/API4/GET_static.json' data-include-format='text'></pre>
 
 
 ##### Opvragen van statische data in een bepaald gebied
-`GET /dynamicdata?geoPolygon=52.370216,4.895168,53.370216,4.895168,53.370216,5.895168,52.370216,4.895168&relation=within`  
+`GET /dynamic?geoPolygon=52.370216,4.895168,53.370216,4.895168,53.370216,5.895168,52.370216,4.895168&relation=within`  
 [Response](./examples/API4/GET_dynamic_depth1.json)  
 
 <pre class='example json' data-include='../examples/API4/GET_dynamic_depth1.json' data-include-format='text'></pre>
@@ -122,14 +122,14 @@ Het gaat in de *latest*-requests altijd om dynamicdata, dus die kan worden wegge
 
 
 #### Opvragen van beknopte data (depth=1) van een bepaalde sectie
-`GET /latest?sectionId=arnhem_ketelstraat_oneven`  
+`GET dynamic/latest?staticSectionId=arnhem_ketelstraat_oneven`  
 [Response](./examples/API5/GET_dynamic_depth1_single_section.json)  
 
 <pre class='example json' data-include='../examples/API5/GET_dynamic_depth1_single_section.json' data-include-format='text'></pre>
 
 
 #### Opvragen van data in een bepaald gebied, in een cirkel met straal 200m vanaf een gegeven punt
-`GET /latest?geopoint=5.90802,51.98173,200`  
+`GET dynamic/latest?geopoint=5.90802,51.98173,200`  
 [Response](./examples/API5/GET_dynamic_depth1.json)  
 
 <pre class='example json' data-include='../examples/API5/GET_dynamic_depth1.json' data-include-format='text'></pre>

@@ -10,7 +10,7 @@ Responses van GET-requests die expliciet om één object vragen, wrappen dit res
 <aside class='example' title="Gewrapped resultaat meervoudige bevraging">
 
 ```
-GET /staticdata
+`GET /static`
 {
   "result": [
     { "id": ..., ... },
@@ -23,7 +23,7 @@ GET /staticdata
 <aside class='example' title="Niet-gewrapped resultaat enkelvoudige bevraging">
 
 ```
-GET /organiations/defietsentellers
+`GET /organiations/defietsentellers`
 {
   "id": "defietsentellers,
   "name: "De Fietsentellers BV"
@@ -68,7 +68,7 @@ Indien geen `surveyId` is gegeven, maakt de server zelf een id en geeft deze ter
 
 <pre class='example json' title="Response" data-include='../examples/API3/responses/POST_new_survey.json' data-include-format='text'></pre>
 
-`POST /staticsection` [Body](./examples/API3/requests/POST_static_section.json)  
+`POST /static` [Body](./examples/API3/requests/POST_static_section.json)  
 Statische secties worden per stuk gepost. De body bevat dus slechts één sectie. Dit om eventuele schrijffouten te kunnen retourneren in de response, bijvoorbeeld als de `id` van de sectie reeds in gebruik is.  
 
 <pre class='example json' title="Body" data-include='../examples/API3/requests/POST_static_section.json' data-include-format='text'></pre>  
@@ -80,7 +80,12 @@ Als er al een sectie met hetzelfde `id` bestaat, krijgt de response code 409 (Co
 
 Het is niet verplicht veld `id` mee te geven in de request. Als er geen `id` gegeven is, wordt deze door de API gegenereerd en is deze zichtbaar in de respons, dat immers het volledig opgeslagen object bevat.
 
-`POST /dynamicdata` [Body](./examples/API3/requests/POST_dynamic_data.json)  
+Statische secties worden per stuk gepost. De body bevat dus slechts één sectie. Dit om eventuele schrijffouten te kunnen retourneren in de response, bijvoorbeeld als de `id` van de sectie reeds in gebruik is.  
+  
+Updaten van een statische sectie kan met PUT. Hier hoeven alleen de verschillen meegegeven te worden, ongewijzigde velden dus niet.  
+`PUT /static/:staticsectionid` [Body](./examples/API3/requests/PUT_static_section.json)  
+
+`POST /dynamic` [Body](./examples/API3/requests/POST_dynamic_data.json)  
 Dynamische data, dus de daadwerkelijke metingen, worden in bulk opgeslagen. De body bevat dus een array aan metingen.  
 
 <pre class='example json' title="Body" data-include='../examples/API3/requests/POST_dynamic_data.json' data-include-format='text'></pre>
@@ -104,8 +109,8 @@ Dynamische data kan sterk gecomprimeerd worden door alleen de totalen op te slaa
 
 ```
 GET /surveys?query_params
-GET /staticdata?query_params
-GET /dynamicdata?query_params
+GET /static?query_params
+GET /dynamic?query_params
 ```
 
 </aside>
