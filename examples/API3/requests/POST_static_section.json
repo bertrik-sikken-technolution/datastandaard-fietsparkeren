@@ -1,5 +1,6 @@
 {
     "id": "arnhem_ketelstraat_oneven",
+    "privateId": "12345",
     "name": "Arnhem Ketelstraat oneven zijde",
     "geoLocation": {
         "type": "Polygon", 

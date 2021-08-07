@@ -71,12 +71,15 @@ De parkeercapaciteit van een sectie lijkt op het eerste gezicht statisch. Toch i
 | Field             | Type                | Required | Description                                                |
 | ----------------- | ------------------- | -------- | ---------------------------------------------------------- |
 | `id`                | string              | yes      | Een uuid, random of eventueel samengesteld                 |
+| `privateId`         | string              | no       | Private id die een contractor hanteert deze sectie                 |
 | `geoLocation`                | GeoJSON                  | no           | Geografische afbakening van deze sectie volgens [[rfc7946]]. Kan gebruikt worden voor geo-zoekopdrachten. |
 | `validFrom`         | [[ISO8601]] timestamp   | no       | Vanaf dit tijdstip mag er dynamische data in deze sectie worden geschreven |
 | `validThrough`      | [[ISO8601]] timestamp   | no       | Tot dit tijdstip mag er dynamische data in deze sectie worden geschreven |
 | `owner`             | string              | no       | organisationId: Eigenaar van deze sectie. Alleen deze organistatie mag wijzigingen aanbrengen aan deze sectie |
 |{.data}
-
+  
+Het optionele veld `privateId` bevat de id die de insturende organisatie zelf intern gebruikt voor deze sectie. Als een contractor kan zoekopdrachten geven op basis van zijn eigen id's. In de responses zal alleen de eigen privateId zichtbaar zijn. PrivateId's worden dus nooit gedeeld met andere organisaties.
+  
 <div class='issue' data-number="4"></div>
   
 ### Dynamische data
@@ -97,6 +100,8 @@ Een sectieboom kan er als volgt uit zien:
     - Subsubsectie (gevel) → dit is een blad  
 
 </aside>
+
+Let op: Dynamische data dient altijd te worden doorgegeven voor de gehele sectie! Bezettingsdata per rek is dus niet mogelijk.  Maak de secties dus niet te groot!
 
 Om de ontwikkeling van een dataportal niet te complex te maken, is het aantal secties in secties voorlopig begrensd op 3 lagen.  
 

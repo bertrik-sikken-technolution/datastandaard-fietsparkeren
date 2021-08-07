@@ -139,11 +139,17 @@ Gebruik bij het zoeken de url-parameters startDate en endData. Tijdstippen worde
 Dus:  
 `?startDate=2020-01-01T0:00:00&endDate=2020-02-01T0:00:00`  
 
-__Filter op sectie__   
-Als een analist alleen data wil van een bepaald fietstype, bijvoorbeeld gewone fietsen:  
-`?sectionID=:sectionID`  
+__Filter op sectieId__   
+Als een analist alleen data van bepaalde statische secties:  
+`?staticSectionId=:staticSectionId`  
 Of meerdere secties:  
-`?sectionID=sectionID1,sectionID2,sectionID3`  
+`?staticSectionId=staticSectionId1,staticSectionId2,staticSectionId3`  
+
+__Filter op privateId__   
+Als een analist alleen data wil van een bepaald fietstype, bijvoorbeeld gewone fietsen:  
+`?privateId=:privateId`  
+Of meerdere secties:  
+`?privateId=privateId1,privateId2,privateId3`  
 
 __Filter op onderzoek__  
 Data die ingestuurd wordt door een dataleverancier kan worden voorzien van een onderzoeksID (surveyID). Als deze ID gegeven is, is het uiteraard mogelijk hierop te filteren:  
