@@ -433,4 +433,19 @@ Is afwezigheid v/h kenmerk 'accessoire' afwezigheid v/e accessoire?
 Of alleen voor fietsen (`{ type: 'f' }`)?
 Moet je uitsluiten bij een _telling_ dat het privéfietsen zijn, en/of moet dat ook bij een capaciteitsmeting.
 
+#### Maar wat is genoeg:
+
+Voertuigen
+
+| id  | type                                   | privé/huur |
+| --- | -------------------------------------- | ---------- |
+| A   | normfiets                              |
+| B   | beperkt afwijkend (kratje/kinderzitje) |
+| C   | sterk afwijkend                        |
+| D   | snor-/bromfiets                        |
+
+Rek/Vak/etc.
+
+parkState
+
 </aside>
