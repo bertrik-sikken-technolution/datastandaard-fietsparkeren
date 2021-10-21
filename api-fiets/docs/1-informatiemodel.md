@@ -160,145 +160,136 @@ De eigenaar van de sectie (`authority`) is verantwoordelijk hiervoor.
 Bij handmatige tellingen is het goed denkbaar dat een veldwerker een extra sectie aanmaakt, die vervolgens goedgekeurd moet worden door de eigenaar.
 
 <div class='issue' data-number="4"></div>
-  
+
+#### Places
+
+Individuele parkeerplekken (_Places_) zijn voorzien als een toekomstige uitbreiding.
+
 ### Dynamische data
 
-Dynamische data, oftewel: de tellingen, daar is uiteraard waar het in deze datastandaard om te doen is. Dynamische data is een verzameling secties/meetgebieden. In een meetgebied kunnen weer subsecties worden ondergebracht en in de subsecties weer nieuwe subsecties. Zo ontstaat er een boom aan secties, die in de onderstaande tabellen 'sectieboom' wordt genoemd.
-Secties zonder subsecties, dus de uiteinden van de sectieboom, heten 'bladeren'.
-Zo kunnen een straat worden opgedeeld in linker- en rechterzijde met aan elke kant diverse parkeervoorzieningen.
+Dynamische data zijn de tellingen of metingen van het aantal plekken en/of het aantal geparkeerde voertuigen.
+Dynamische data kan per sectie aangeleverd worden en per parkeerlocatie of per sectie uitgeleverd worden.
+Teldata van de secties van één parkeerlocatie moeten dan wel op hetzelfde moment geüpdatet worden.
 
-<aside class="example" title="Boom- en bladeren">
+Merk op dat de totalen van de parkeerlocatie samen met de secties aangeleverd wordt:
+het eerste tellings/metingsobject (in de ingestuurde JSON-array) beschrijft de parkeerlocatie, de andere de
 
-Een sectieboom kan er als volgt uit zien:
-
-- Sectie (Dorpsstraat)
-  - Subsectie (Even zijde)
-    - Subsubsectie (Rek) → dit is een blad
-    - Subsubsectie (Verzameling nietjes) → dit is een blad
-  - Subsectie (Oneven zijde)
-    - Subsubsectie (gevel) → dit is een blad
-
-</aside>
-
-Let op: Dynamische data dient altijd te worden doorgegeven voor de gehele sectie! Bezettingsdata per rek is dus niet mogelijk. Maak de secties dus niet te groot!
-
-Om de ontwikkeling van een dataportal niet te complex te maken, is het aantal secties in secties voorlopig begrensd op 3 lagen.
-
-<aside class='def'>
-
-In de bladeren van de sectieboom MOET gedetailleerde teldata worden doorgegeven, verpakt in `Count`-objecten.
-
-</aside>
-
-Zie document [Dynamische data in de fietsparkeerstandaard](../docs/20190924-dataformaat-fietstellingen-v2-10.pdf) voor een beknopte a-technische uitleg van het telprincipe in de datastandaard
-
-<div class='issue' data-number='5'></div>
+> **Implementatiespecifiek**:
+> Totalen van de parkeerlocatie kunnen dan met de updates vooraf berekend worden of pas bij uitlevering.
 
 #### `DynamicData`
 
 | Field    | Type             | Required | Description                           |
 | -------- | ---------------- | -------- | ------------------------------------- |
 | `result` | DynamicSection[] | yes      | Verzameling secties met stallingsdata |
+| {.data}  |
 
-|{.data}
+#### `DynamicParkingFacility`
+
+| Field                      | Type                  | Required    | Description                                                           |
+| -------------------------- | --------------------- | ----------- | --------------------------------------------------------------------- |
+| `parkingFacility`          | `ParkingFacility.id`  | yes         | Parkeerlocatie waar deze meting over gaat.                            |
+| `timestamp`                | [[ISO8601]] timestamp | conditional | Tijdstip van de meting. Alleen verplicht in de stam van de sectieboom |
+| `surveyId`                 | string                | conditional | Id van de survey waartoe deze meting behoort                          |
+| `parkingCapacity`          | number                | conditional | Totaal aantal plekken, verplicht in de bladeren van de sectieboom     |
+| `parkingCapacityTimestamp` | [[ISO8601]] timestamp | no          | Tijdstip van meting aantal plekken                                    |
+| `vacantSpaces`             | number                | conditional | Aantal vrije plekken, verplicht in de bladeren van de sectieboom      |
+| `occupiedSpaces`           | number                | conditional | Aantal bezette plekken, verplicht in de bladeren van de sectieboom    |
+| `count`                    | Count[]               | no          | Verzameling van Count-objecten                                        |
+| `space`                    | Space                 | no          | Alleen toegestaan in de bladeren van de sectieboom                    |
+| `note`                     | Note                  | no          | Notities over de meting in deze sectie                                |
+| {.data}                    |
 
 #### `DynamicSection`
 
-| Field                      | Type                  | Required    | Description                                                                                                                                              |
-| -------------------------- | --------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                       | string                | yes         | id van deze dynamische sectie, indien niet meegestuurd bij schrijven, wordt deze gegenereerd door de API                                                 |
-| `staticSectionId`          | string                | yes         | id van de statische sectie waartoe deze dynamische data behoort                                                                                          |
-| `timestamp`                | [[ISO8601]] timestamp | conditional | Tijdstip van de meting. Alleen verplicht in de stam van de sectieboom                                                                                    |
-| `surveyId`                 | string                | conditional | Id van de survey waartoe deze meting behoort                                                                                                             |
-| `authorityId`              | string                | conditional | Id van de opdrachtgever van deze meting                                                                                                                  |
-| `contractorId`             | string                | conditional | Id van de instantie die deze data aangeleverd heeft. Bij een POST-request dient dit door het dataportal gevuld te worden met de username van de inzender |
-| `parkingCapacity`          | number                | conditional | Totaal aantal plekken, verplicht in de bladeren van de sectieboom                                                                                        |
-| `parkingCapacityTimestamp` | [[ISO8601]] timestamp | no          | Tijdstip van meting aantal plekken                                                                                                                       |
-| `vacantSpaces`             | number                | conditional | Aantal vrije plekken, verplicht in de bladeren van de sectieboom                                                                                         |
-| `occupiedSpaces`           | number                | conditional | Aantal bezette plekken, verplicht in de bladeren van de sectieboom                                                                                       |
-| `count`                    | Count[]               | no          | Verzameling van Count-objecten                                                                                                                           |
-| `space`                    | Space                 | no          | Alleen toegestaan in de bladeren van de sectieboom                                                                                                       |
-| `sections`                 | DynamicSection[]      | no          | Verzameling van subsecties. Er zitten dus subsections in een subsection. Dit mag maximaal 3 lagen diep                                                   |
-| `note`                     | Note                  | no          | Notities over de meting in deze sectie                                                                                                                   |
+Een telling of meting kan gaan over het aantal parkeerplekken (evt. naar type) en/of
+het aantal geparkeerde voertuigen (evt. naar type) in een sectie.
 
-|{.data}
+| Field                 | Type                    | Required    | Description                                                                                        |
+| --------------------- | ----------------------- | ----------- | -------------------------------------------------------------------------------------------------- |
+| `section`             | `Section.id`            | yes         | Sectie waarop deze telling/meting betrekking heeft.                                                |
+| `timestamp`           | [[ISO8601]] timestamp   | yes         | Tijdstip van de meting                                                                             |
+| `surveyId`            | string                  | yes         | Id van de survey waartoe deze meting behoort                                                       |
+| `parkingCapacity`     | number                  | conditional | Totaal aantal plekken, verplicht bij capaciteitstelling.                                           |
+| `totalParked`         | number                  | conditional | Totaal aantal geparkeerde voertuigen, verplicht bij telling van het aantal geparkeerde voertuigen. |
+| `capacityBySpaceType` | `CapacityBySpaceType[]` | no          | Capaciteit per type parkeervoorziening                                                             |
+| `parkedByVehicleType` | `VehicleTypeCount[]`    | no          | Telling per geparkeerd voertuigtype                                                                |
+| `occupiedSpaces`      | number                  | no          | Aantal bezette plekken, berekend o.b.v. `capacityBySpaceType` en `parkedByVehicleType`             |
+| {.data}               |
 
 De velden surveyId, authorityId en contractorId kunnen gebruikt worden bij het filteren van data bij de zoekopdrachten van de API's 4 en 5.
 Je zou bijvoorbeeld kunnen alle metingen van een bepaald onderzoek die zijn uitgevoerd door een bepaalde contractor kunnen opvragen. Zie _API Requests_ voor meer details over zoekopdrachten.
 
-De velden `parkingCapacity`, `vacantSpaces` en `occupiedSpaces` en `count` zijn VEREIST in de bladeren van de sectieboom.
+### `CapacityBySpaceType`
 
-Indien ze in de takken niet gegeven zijn, kunnen `vacantSpaces`, `occupiedSpaces` en `occupation` berekend worden door alle `vacantSpaces`, etc. van onderliggende sections op te tellen.
+| Field              | Type         | Required | Description                                                                                  | ProRail |
+| ------------------ | ------------ | -------- | -------------------------------------------------------------------------------------------- | ------- |
+| `type`             | `Space.type` | no       | SpaceTypeID; tenminste 1 veld dient gegeven te zijn                                          | \*      |
+| `vehicles`         | `Vehicle[]`  | no       | Deze parkeervoorziening is uitsluitend voor voertuigen voldoend aan de genoemde beperkingen. | \*      |
+| `numberOfVehicles` | number       | no       | Capaciteit                                                                                   | \*      |
+| {.data}            |
 
-### `Space`
-
-Definiëring van een plek aan de hand van properties
-
-| Field      | Type      | Required | Description                                                 |
-| ---------- | --------- | -------- | ----------------------------------------------------------- |
-| `type`     | string    | no       | SpaceTypeID; tenminste 1 veld dient gegeven te zijn         |
-| `level`    | number    | no       | 0=onder, 1=boven                                            |
-| `vehicles` | Vehicle[] | no       | Deze space is uitsluitend geschikt voor genoemde voertuigen |
-
-|{.data}
+> **Voorbeeld**
+> Etagerek-onder met capaciteit voor 10 huurfietsen `{ numberOfVehicles: 10, type: 'o', vehicles: [ { type: 'f', owner: 'h' } ] }`
+>
+> Vak voor 15 deelsnor- of -bromfietsen: `{ numberOfVehicles: 15, type: 'v', vehicles: [ { type: 'sb', owner: 'h' } ] }`
 
 #### `Space.type`
 
-| ID  | spaceType          |
-| --- | ------------------ |
-| `x` | buiten voorziening |
-| `r` | rek                |
-| `n` | nietjes            |
-| `v` | vak                |
-| `w` | voor fietsenwinkel |
-| `a` | anders             |
-
-|{.data}
-
-<div class='issue' data-number='6'></div>
+| ID      | spaceType         | ProRail |
+| ------- | ----------------- | ------- |
+| `x`     | geen voorziening  |
+| `r`     | rek               | \*      |
+| `e`     | etagerek          | \*      |
+| `b`     | etagerek-boven    | \*      |
+| `o`     | etagerek-onder    | \*      |
+| `k`     | kluis             | \*      |
+| `n`     | nietjes           |
+| `v`     | vak               | \*      |
+| `w`     | van fietsenwinkel |
+| `a`     | anders            |
+| {.data} |
 
 ### `Vehicle`
 
-| Field         | Type           | Required | Description                  |
-| ------------- | -------------- | -------- | ---------------------------- |
-| `type`        | string         | no       | Zie tabel Vehicle.type       |
-| `propulsion`  | string[]       | no       | Zie tabel Vehicle.propulsion |
-| `appearance`  | string         | no       | Zie tabel Vehicle.appearance |
-| `state`       | VehicleState[] | no       | Zie tabel VehicleState       |
-| `parkState`   | string[]       | no       | Zie tabel Vehicle.parkState  |
-| `accessoires` | Accessoire[]   | no       | Zie tabel Accessoire         |
-| `owner`       | string         | no       | Zie tabel Vehicle.owner      |
+<div class='issue' data-number="9"></div>
 
-|{.data}
+| Field         | Type           | Required | Description                  | ProRail |
+| ------------- | -------------- | -------- | ---------------------------- | ------- |
+| `type`        | string         | no       | Zie tabel Vehicle.type       | \*      |
+| `propulsion`  | string[]       | no       | Zie tabel Vehicle.propulsion |
+| `appearance`  | string         | no       | Zie tabel Vehicle.appearance | \*      |
+| `state`       | VehicleState[] | no       | Zie tabel VehicleState       |
+| `accessoires` | Accessoire[]   | no       | Zie tabel Accessoire         | \*      |
+| `owner`       | string         | no       | Zie tabel Vehicle.owner      | \*      |
+| {.data}       |
 
 #### `Accessoire`
 
-| Field      | Type   | Required | Description                            |
-| ---------- | ------ | -------- | -------------------------------------- |
-| `type`     | string | no       | Zie tabel Vehicle.accessoire.typen     |
+| Field      | Type   | Required | Description                            | ProRail |
+| ---------- | ------ | -------- | -------------------------------------- | ------- |
+| `type`     | string | no       | Zie tabel Vehicle.accessoire.typen     | \*      |
 | `position` | string | no       | Zie tabel Vehicle.accessoire.positions |
-
-|{.data}
+| {.data}    |
 
 ##### `Vehicle.accessoire.typen`
 
-| ID  | Omschrijving |
-| --- | ------------ |
-| `z` | zitje        |
-| `t` | fietstas     |
-| `r` | rek          |
-| `b` | bak / mand   |
-
-|{.data}
+| ID      | Omschrijving               | ProRail |
+| ------- | -------------------------- | ------- |
+| `z`     | kinderzitje                |
+| `t`     | fietstas                   |
+| `b`     | bagagedrager               |
+| `k`     | krat/mand                  |
+| `p`     | Beperkt afwijkend, nl. k,z | \*      |
+| {.data} |
 
 ##### `Vehicle.accessoire.positions`
 
-| ID  | Omschrijving |
-| --- | ------------ |
-| `v` | voor         |
-| `a` | achter       |
-
-|{.data}
+| ID      | Omschrijving |
+| ------- | ------------ |
+| `v`     | voor         |
+| `a`     | achter       |
+| {.data} |
 
 #### `VehicleState`
 
@@ -306,99 +297,101 @@ Definiëring van een plek aan de hand van properties
 | ---------- | ------ | -------- | -------------------------------- |
 | `type`     | string | no       | Zie tabel Vehicle.state.type     |
 | `position` | string | no       | Zie tabel Vehicle.state.position |
-
-|{.data}
+| {.data}    |
 
 ##### `Vehicle.state.type`
 
-| ID  | Omschrijving |
-| --- | ------------ |
-| `w` | wrak         |
-| `l` | lekke band   |
-| `z` | zonder zadel |
-| ... | ...          |
-
-|{.data}
+| ID      | Omschrijving |
+| ------- | ------------ |
+| `w`     | wrak         |
+| `l`     | lekke band   |
+| `z`     | zonder zadel |
+| ...     | ...          |
+| {.data} |
 
 ##### `Vehicle.state.position`
 
-| ID  | Omschrijving |
-| --- | ------------ |
-| `v` | voor         |
-| `a` | achter       |
-
-|{.data}
+| ID      | Omschrijving |
+| ------- | ------------ |
+| `v`     | voor         |
+| `a`     | achter       |
+| {.data} |
 
 #### `Vehicle.parkState`
 
-| ID  | Omschrijving      |
-| --- | ----------------- |
-| `n` | naast voorziening |
-| `d` | dubbel            |
-| ... | ...               |
-
-|{.data}
+| ID      | Omschrijving       | ProRail |
+| ------- | ------------------ | ------- |
+| `i`     | In voorziening     | \*      |
+| `p`     | nabij voorziening  | \*      |
+| `x`     | buiten voorziening | \*      |
+| {.data} |
 
 #### `Vehicle.type`
 
 Classificatie naar wettelijke voertuigcategorie.
 
-| ID  | Voertuigtype          | Omschrijving                                                                |
-| --- | --------------------- | --------------------------------------------------------------------------- |
-| `f` | fiets                 | Geen kenteken en geen verzekeringsplaatje                                   |
-| `c` | bakfiets              | Fiets met bak                                                               |
-| `s` | snorfiets             | kentekenplaat is blauw, met een wit kader, wit opschrift en een hologram    |
-| `b` | bromfiets             | kentekenplaat is geel, met een zwart kader, zwart opschrift en een hologram |
-| `m` | motorfiets            | NL geel of blauw, internationaal anders                                     |
-| `g` | gehandicaptenvoertuig | driewieler, scootmobiel, rolstoel, etc                                      |
-| `a` | anders                |                                                                             |
-
-|{.data}
+| ID      | Voertuigtype          | Omschrijving                                                                | ProRail                    |
+| ------- | --------------------- | --------------------------------------------------------------------------- | -------------------------- |
+| `f`     | fiets                 | Geen kenteken en geen verzekeringsplaatje                                   | \*                         |
+| `s`     | snorfiets             | kentekenplaat is blauw, met een wit kader, wit opschrift en een hologram    | \*                         |
+| `b`     | bromfiets             | kentekenplaat is geel, met een zwart kader, zwart opschrift en een hologram | \*                         |
+| `sb`    | snor- of bromfiets    | kentekenplaat is geel of blauw, onderscheid wordt niet gemaakt.             | \*                         |
+| `m`     | motorfiets            | NL geel, internationaal anders                                              |
+| `g`     | gehandicaptenvoertuig | driewieler, scootmobiel, rolstoel, etc                                      | (zie `Vehicle.appearance`) |
+| `a`     | anders                |                                                                             |
+| {.data} |
 
 #### `Vehicle.propulsion`
 
-| ID  | Aandrijving | Omschrijving                          |
-| --- | ----------- | ------------------------------------- |
-| `s` | Spierkracht | bv traditionele fiets of voetganger   |
-| `e` | Elektrisch  | bv e-bike                             |
-| `b` | Brandstof   | bv traditionele bromfiets, motorfiets |
-
-|{.data}
+| ID      | Aandrijving            | Omschrijving                          |
+| ------- | ---------------------- | ------------------------------------- |
+| `s`     | Spierkracht            | bv traditionele fiets of voetganger   |
+| `e`     | Elektrisch             | bv e-bike                             |
+| `s`     | Elektrisch ondersteund | bv e-bike                             |
+| `b`     | Verbrandingsmotor      | bv traditionele bromfiets, motorfiets |
+| {.data} |
 
 #### `Vehicle.appearance`
 
-| ID  | Verschijningsvorm         |
-| --- | ------------------------- |
-| `k` | Kinderfiets               |
-| `r` | Racefiets                 |
-| `l` | Ligfiets                  |
-| `b` | Bakfiets / Transportfiets |
-| `f` | Fietskar                  |
-| `v` | Vouwfiets                 |
-| `m` | Mountainbike              |
-| `d` | Driewieler                |
-| `t` | Tandem                    |
-
-|{.data}
+| ID      | Verschijningsvorm              | ProRail |
+| ------- | ------------------------------ | ------- |
+| `k`     | Kinderfiets                    |
+| `r`     | Racefiets                      |
+| `l`     | Ligfiets                       |
+| `b`     | Bakfiets / Transportfiets      |
+| `f`     | Fietskar                       |
+| `v`     | Vouwfiets                      |
+| `m`     | Mountainbike                   |
+| `d`     | Driewieler                     |
+| `t`     | Tandem                         |
+| `g`     | Gehandicaptenvoertuig          |
+| `x`     | Sterk afwijkend: nl. b,f,d,t,g | \*      |
+| {.data} |
 
 #### `Vehicle.owner`
 
-| ID  | Eigenaar | Omschrijving                 |
-| --- | -------- | ---------------------------- |
-| `p` | Privé    | Privéfiets                   |
-| `l` | Lease    | Leasefiets, zoals Swap Bikes |
-| `h` | Huur     | Huurfiets, zoals OV-fiets    |
+| ID      | Eigenaar | Omschrijving                 | ProRail |
+| ------- | -------- | ---------------------------- | ------- |
+| `p`     | Privé    | Privéfiets                   | (std.)  |
+| `l`     | Lease    | Leasefiets, zoals Swap Bikes |
+| `h`     | Huur     | Huurfiets, zoals OV-fiets    | \*      |
+| {.data} |
 
-|{.data}
+### `VehicleTypeCount`
 
-### `Count`
+| Field              | Type    | Required | Description                              | ProRail |
+| ------------------ | ------- | -------- | ---------------------------------------- | ------- |
+| `vehicle`          | Vehicle | yes      | Voertuigtype                             | \*      |
+| `parkState`        | string  | no       | Zie tabel Vehicle.parkState              | \*      |
+| `numberOfVehicles` | number  | yes      | Aantal gestalde voertuigen van dit type. | \*      |
+| {.data}            |
 
-| Field              | Type    | Required | Description                                               |
-| ------------------ | ------- | -------- | --------------------------------------------------------- |
-| `vehicle`          | Vehicle | no       | Niet gegeven betekent dat het voertuigtype niet bekend is |
-| `numberOfVehicles` | number  | yes      | Aantal gestalde voertuigen                                |
-
-|{.data}
+> **Voorbeeld**:
+> 6 particuliere fietsen in het rek: `{ vehicle: {type: 'f', owner: 'p'}, numberOfVehicles: 6, parkState: 'i'}`;
+>
+> 4 particuliere fietsen buiten het rek: `{ vehicle: {type: 'f', owner: 'p'}, numberOfVehicles: 4, parkState: 'x'}`;
+>
+> 100 normale fietsen buiten voorziening: `{ vehicle: { type: 'f' }, numberOfVehicles: 100, parkState: 'x' }`;
 
 ### `Note`
 
@@ -409,5 +402,35 @@ Classificatie naar wettelijke voertuigcategorie.
 | `isEvent`             | boolean | no       | Evenement (markt, kermis, ...)?           |
 | `isUnderConstruction` | boolean | no       | Werkzaamheden?                            |
 | `remark`              | string  | no       | Vrij tekstveld                            |
+| {.data}               |
 
-|{.data}
+<aside class='example' title="ProRail">
+
+De gewenste voorzieningtypes voor ProRail:
+
+- Rek = `{ type: 'r', vehicle: [{ owner: 'p', type: 'f' }] }` (voor normfietsen van normale mensen)
+- Etagerek = `{ type: 'e', vehicle: [{ owner: 'p', type: 'f' }] }`
+- Vak = `{ type: 'v', vehicles: [{ type: 'sb'}, { appearance: 'x' }] }` (snor-, brom- en sterk afwijkend model fiets)
+- Kluis = `{ type: 'k', vehicles: [{ type: 'f' }]}`
+- Buitenmodel (beperkt afwijkend)-rek = `{ type: 'r', vehicles: [{ type: 'f', accessoire: [{type: 'p'}] }] }`
+- Buitenmodel (beperkt afwijkend)-rek etage = `{ type: 'o', vehicles: [{ type: 'f', accessoire: [{type: 'p'}] }] }`
+- Deelfiets-rek = `{ type: 'r', vehicle: [{ type: 'f', owner: 'h' }] }`
+- Deelfiets-vak = `{ type: 'v', vehicle: [{ type: 'f', owner: 'h' }] }`
+
+De gewenste fietstypes voor ProRail:
+
+- Fiets = `{ type: 'f', owner: 'p' }`
+- Geel kenteken = `{ type: 'b', owner: 'p' }`
+- Blauw kenteken = `{ type: 's', owner: 'p' }` (Is dat te onderscheiden tov huur?)
+- Deelfiets = `{ type: 'f', owner: 'h' }`
+- Deelscooter = `{ type: 'sb', owner: 'h' }`
+- Bakfiets = `{ type: 'f', appearance: 'x' }`
+- Buitenmodelfiets = `{ type: 'f', accessoire: [{ type: 'p' }] }`
+- Vierwieler = `{ type: 'f', appearance: 'x' }` (???)
+- Overig = `{ type: 'a' }`
+
+Is afwezigheid v/h kenmerk 'accessoire' afwezigheid v/e accessoire?
+Of alleen voor fietsen (`{ type: 'f' }`)?
+Moet je uitsluiten bij een _telling_ dat het privéfietsen zijn, en/of moet dat ook bij een capaciteitsmeting.
+
+</aside>
