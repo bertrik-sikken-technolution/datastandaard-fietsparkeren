@@ -335,16 +335,20 @@ Dit is voor later voorzien.
 
 <div class='issue' data-number="9"></div>
 
-| Field          | Type                                            | Required | Description                                     | ProRail |
-| -------------- | ----------------------------------------------- | -------- | ----------------------------------------------- | ------- |
-| `type`         | string                                          | no       | Zie tabel Vehicle.type                          | \*      |
-| `propulsion`   | string[]                                        | no       | Zie tabel Vehicle.propulsion                    |
-| `appearance`   | string                                          | no       | Zie tabel Vehicle.appearance                    | \*      |
-| `state`        | VehicleState[]                                  | no       | Zie tabel VehicleState                          |
-| `accessoires`  | Accessoire[]                                    | no       | Zie tabel Accessoire                            | \*      |
-| `owner`        | string                                          | no       | Zie tabel Vehicle.owner                         | \*      |
-| `wasCanonical` | `CanonicalVehicle.canonicalIdentifier` (string) | no       | Vertaald uit een survey-specifiek voertuigtype. |
+| Field          | Type                                                       | Required | Description                                     | ProRail |
+| -------------- | ---------------------------------------------------------- | -------- | ----------------------------------------------- | ------- |
+| `type`         | string                                                     | no       | Zie tabel Vehicle.type                          | \*      |
+| `propulsion`   | string[]                                                   | no       | Zie tabel Vehicle.propulsion                    |
+| `appearance`   | string                                                     | no       | Zie tabel Vehicle.appearance                    | \*      |
+| `state`        | VehicleState[]                                             | no       | Zie tabel VehicleState                          |
+| `accessoires`  | Accessoire[]                                               | no       | Zie tabel Accessoire                            | \*      |
+| `owner`        | string                                                     | no       | Zie tabel Vehicle.owner                         | \*      |
+| `wasCanonical` | `CanonicalVehicle.canonicalIdentifier` (string) of boolean | no       | Vertaald uit een survey-specifiek voertuigtype. |
 | {.data}        |
+
+> TODO:
+> Indien `wasCanonical = true`: afwezigheid van een onderdeel, betekent niet de afwezigheid van wat het specificeert.
+> Indien `wasCanonical = false`: ...
 
 #### `CanonicalVehicle`
 
@@ -358,6 +362,8 @@ Alternatief voor expliciete voertuigtyperingen.
 | {.data}               |
 
 Dan kun je op plekken waar `Vehicle` object wordt verwacht, óók een `CanonicalVehicle.canonicalIdentifier` string hebben.
+
+> TODO: Nog koppelen aan een Survey
 
 <aside class="example" title="Canonieke voertuigen">
 
