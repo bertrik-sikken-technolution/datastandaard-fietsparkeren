@@ -335,15 +335,16 @@ Dit is voor later voorzien.
 
 <div class='issue' data-number="9"></div>
 
-| Field         | Type           | Required | Description                  | ProRail |
-| ------------- | -------------- | -------- | ---------------------------- | ------- |
-| `type`        | string         | no       | Zie tabel Vehicle.type       | \*      |
-| `propulsion`  | string[]       | no       | Zie tabel Vehicle.propulsion |
-| `appearance`  | string         | no       | Zie tabel Vehicle.appearance | \*      |
-| `state`       | VehicleState[] | no       | Zie tabel VehicleState       |
-| `accessoires` | Accessoire[]   | no       | Zie tabel Accessoire         | \*      |
-| `owner`       | string         | no       | Zie tabel Vehicle.owner      | \*      |
-| {.data}       |
+| Field          | Type                                            | Required | Description                                     | ProRail |
+| -------------- | ----------------------------------------------- | -------- | ----------------------------------------------- | ------- |
+| `type`         | string                                          | no       | Zie tabel Vehicle.type                          | \*      |
+| `propulsion`   | string[]                                        | no       | Zie tabel Vehicle.propulsion                    |
+| `appearance`   | string                                          | no       | Zie tabel Vehicle.appearance                    | \*      |
+| `state`        | VehicleState[]                                  | no       | Zie tabel VehicleState                          |
+| `accessoires`  | Accessoire[]                                    | no       | Zie tabel Accessoire                            | \*      |
+| `owner`        | string                                          | no       | Zie tabel Vehicle.owner                         | \*      |
+| `wasCanonical` | `CanonicalVehicle.canonicalIdentifier` (string) | no       | Vertaald uit een survey-specifiek voertuigtype. |
+| {.data}        |
 
 #### `CanonicalVehicle`
 
