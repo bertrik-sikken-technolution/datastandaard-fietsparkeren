@@ -15,7 +15,7 @@ De velden en zoekfuncties die in deze datastandaard zijn opgenomen, MOETEN worde
 | `dynamicData` | DynamicData | no       | Dynamische data (bezettingsdata, fietstellingen, ...) |
 | {.data}       |
 
-### Surveys
+### Surveys – Onderzoeken
 
 Het datablok Survey bevat data over het onderzoek. Geïnitieerd door wie? Uitgevoerd door wie? Wanneer? Waar? Al deze informatie kan worden ingestuurd, maar is niet verplicht.
 
@@ -40,6 +40,15 @@ Een survey bevat vaste gegevens over een onderzoek.
 | `license`       | string     | no       | Licentie van het gebruik van de data                                                                                                                        |
 | `surveyArea`    | `string[]` | no       | ID van de onderzoeksgebieden die zijn meegenomen in het onderhavige onderzoek.                                                                              |
 | {.data}         |
+
+Opdrachtgever en uitvoerder zijn consistent over de levensduur van de survey.
+De datastandaard stelt geen eisen aan de
+
+<aside class="advisement">
+
+De implementatie van VeiligStallen genereert Survey-ID's op basis van gemeente, `authority.id` en `contractor.id`.
+
+</aside>
 
 #### `Organisation`
 
@@ -103,12 +112,14 @@ Het is een hulpmiddel om parkeerlocaties in een bepaald gebied te selecteren.
 Er is geen vaste relatie tussen onderzoeksgebieden en parkeerfaciliteiten: dat is puur een geografische relatie.
 Ze zijn ook nuttig voor historische vergelijkingen.
 
-<aside>
+<aside class="example">
 
-Met er een onderscheid gemaakt worden in
+Met er een onderscheid gemaakt worden in niveaus, voor bijv.
 
 - Onderzoeksgebied
 - Deelonderzoeksgebied
+
+en voor:
 
 - CBS Gemeente
 - CBS Buurt
@@ -119,19 +130,21 @@ Dan moet je ook de parent ervan aangeven.
 
 </aside>
 
-| Field          | Type                  | Required | Description                                                                                                            |
-| -------------- | --------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `id`           | string                | yes      | Een uuid, random of eventueel samengesteld                                                                             |
-| `geoLocation`  | GeoJSON               | no       | Geografische afbakening van deze sectie volgens [[rfc7946]]. Kan gebruikt worden voor geo-zoekopdrachten.              |
-| `validFrom`    | [[ISO8601]] timestamp | no       | Begin geldigheid                                                                                                       |
-| `validThrough` | [[ISO8601]] timestamp | no       | Einde geldigheid                                                                                                       |
-| `authority`    | OrganisationID        | no       | organisationId: Eigenaar van dit onderzoeksgebied. Alleen deze organistatie mag wijzigingen aanbrengen aan deze sectie |
-| `altLabel`     | string[]              | no       | Alternatieve namen of IDs die de eigenaar of inwinner aan dit onderzoeksgebied geeft.                                  |
+| Field          | Type                       | Required | Description                                                                                                            |
+| -------------- | -------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `id`           | string                     | yes      | Een uuid, random of eventueel samengesteld                                                                             |
+| `geoLocation`  | GeoJSON (object)           | yes      | Geografische afbakening van deze sectie volgens [[rfc7946]]. Kan gebruikt worden voor geo-zoekopdrachten.              |
+| `validFrom`    | [[rfc3339]] timestamp      | no       | Begin geldigheid                                                                                                       |
+| `validThrough` | [[rfc3339]] timestamp      | no       | Einde geldigheid                                                                                                       |
+| `authority`    | `Organisation.id` (string) | yes      | organisationId: Eigenaar van dit onderzoeksgebied. Alleen deze organistatie mag wijzigingen aanbrengen aan deze sectie |
+| `label`        | string[]                   | no       | Naam die de eigenaar of inwinner aan dit onderzoeksgebied geeft.                                                       |
+| `altLabel`     | string[]                   | no       | Alternatieve namen of IDs die de eigenaar of inwinner aan dit onderzoeksgebied geeft.                                  |
+| `parent`       | `SurveyArea.id` (string)   | no       | Verwijzing naar een onderzoeksgebied van een hogerliggende orde.                                                       |
 | {.data}        |
 
 #### Parking Facility
 
-Een Parkeerlocatie is een plek waar voertuigen geparkeerd kunnen worden, zoals een fietsenstalling, een plein, een trottoir.
+Een Parkeerlocatie is een plek waar voertuigen geparkeerd kunnen worden, zoals een fietsenstalling, een plein of een trottoir.
 Een parkeerlocatie kan onderverdeeld worden in 1 of meerdere [secties](#sections).
 De parkeerlocatie heeft altijd een geometrie, minimaal een punt op de kaart, maar bij voorkeur een contour.
 Kenmerken van de locatie, zoals openingstijden of bewaakt/onbewaakt worden op dit niveau geregistreerd (dit wordt later uitgewerkt, in lijn met VeloPark en SPDP).
@@ -154,8 +167,8 @@ De eigenaar; alternatieve IDs van de inwinnaar moet die zelf beheren.
 | ----------------- | --------------------- | ----------- | --------------------------------------------------------------------------------------------------------- |
 | `id`              | string                | yes         | Een uuid, random of eventueel samengesteld                                                                |
 | `geoLocation`     | GeoJSON               | no          | Geografische afbakening van deze sectie volgens [[rfc7946]]. Kan gebruikt worden voor geo-zoekopdrachten. |
-| `validFrom`       | [[ISO8601]] timestamp | no          | Dit item is geldig vanaf dit tijdstip.                                                                    |
-| `validThrough`    | [[ISO8601]] timestamp | no          | Dit item is geldig tot dit tijdstip.                                                                      |
+| `validFrom`       | [[rfc3339]] timestamp | no          | Dit item is geldig vanaf dit tijdstip.                                                                    |
+| `validThrough`    | [[rfc3339]] timestamp | no          | Dit item is geldig tot dit tijdstip.                                                                      |
 | `altLabel`        | string[]              | conditional | Alternatieve namen of IDs van de eigenaar of inwinner.                                                    |
 | `securityFeature` | `SecurityFeature[]`   | conditional | Beveiligingskenmerken                                                                                     |
 | `allowedVehicles` | `Vehicle[]`           | conditional | Toegestane voertuigtypen voor deze parkeerlocatie.                                                        |
@@ -199,8 +212,8 @@ Voor bijvoorbeeld handmatige tellers kan dat wel handig zijn.
 | `altLabel`        | string                | no       | Private id die een contractor hanteert deze sectie                                                            |
 | `geoLocation`     | GeoJSON               | no       | Geografische afbakening van deze sectie volgens [[rfc7946]]. Kan gebruikt worden voor geo-zoekopdrachten.     |
 | `spaces`          | `Space[]`             | no       | De types parkeervoorziening.                                                                                  |
-| `validFrom`       | [[ISO8601]] timestamp | no       | Vanaf dit tijdstip mag er dynamische data in deze sectie worden geschreven                                    |
-| `validThrough`    | [[ISO8601]] timestamp | no       | Tot dit tijdstip mag er dynamische data in deze sectie worden geschreven                                      |
+| `validFrom`       | [[rfc3339]] timestamp | no       | Vanaf dit tijdstip mag er dynamische data in deze sectie worden geschreven                                    |
+| `validThrough`    | [[rfc3339]] timestamp | no       | Tot dit tijdstip mag er dynamische data in deze sectie worden geschreven                                      |
 | `level`           | number                | no       | De etage (-1, 0 = begane grond, 1, etc.) in de parkeerlocatie waar deze sectie zich bevindt.                  |
 | `authority`       | OrganisationID        | no       | organisationId: Eigenaar van deze sectie. Alleen deze organistatie mag wijzigingen aanbrengen aan deze sectie |
 | {.data}           |
@@ -247,7 +260,7 @@ het eerste tellings/metingsobject (in de ingestuurde JSON-array) beschrijft de p
 | Field                 | Type                    | Required    | Description                                                                             |
 | --------------------- | ----------------------- | ----------- | --------------------------------------------------------------------------------------- |
 | `parkingFacility`     | `ParkingFacility.id`    | yes         | Parkeerlocatie waar deze meting over gaat.                                              |
-| `timestamp`           | [[ISO8601]] timestamp   | conditional | Tijdstip van de meting.                                                                 |
+| `timestamp`           | [[rfc3339]] timestamp   | conditional | Tijdstip van de meting.                                                                 |
 | `surveyId`            | string                  | conditional | Id van de survey waartoe deze meting behoort                                            |
 | `parkingCapacity`     | number                  | conditional | Totaal aantal plekken, verplicht als één of meerdere onderdelen dit gemeten hebben.     |
 | `vacantSpaces`        | number                  | conditional | Aantal vrije plekken.                                                                   |
@@ -259,6 +272,8 @@ het eerste tellings/metingsobject (in de ingestuurde JSON-array) beschrijft de p
 | `note`                | Note                    | no          | Notities over de meting in deze sectie                                                  |
 | {.data}               |
 
+Parkeercapaciteit wordt dynamisch geregistreerd, zodat kleine veranderingen aan de parkeervoorzieningen niet tot een nieuwe ParkingFacility leidt.
+
 #### `DynamicSection`
 
 Een telling of meting kan gaan over het aantal parkeerplekken (evt. naar type) en/of
@@ -267,7 +282,7 @@ het aantal geparkeerde voertuigen (evt. naar type) in een sectie.
 | Field                 | Type                    | Required    | Description                                                                                        |
 | --------------------- | ----------------------- | ----------- | -------------------------------------------------------------------------------------------------- |
 | `section`             | `Section.id`            | yes         | Sectie waarop deze telling/meting betrekking heeft.                                                |
-| `timestamp`           | [[ISO8601]] timestamp   | yes         | Tijdstip van de meting                                                                             |
+| `timestamp`           | [[rfc3339]] timestamp   | yes         | Tijdstip van de meting                                                                             |
 | `surveyId`            | string                  | yes         | Id van de survey waartoe deze meting behoort                                                       |
 | `parkingCapacity`     | number                  | conditional | Totaal aantal plekken, verplicht bij capaciteitstelling.                                           |
 | `totalParked`         | number                  | conditional | Totaal aantal geparkeerde voertuigen, verplicht bij telling van het aantal geparkeerde voertuigen. |
@@ -330,17 +345,15 @@ Dit is voor later voorzien.
 | `owner`       | string         | no       | Zie tabel Vehicle.owner      | \*      |
 | {.data}       |
 
-Alternatief:
+#### `CanonicalVehicle`
 
-| Field                 | Type           | Required | Description                                        | ProRail |
-| --------------------- | -------------- | -------- | -------------------------------------------------- | ------- |
-| `canonicalIdentifier` | string         | yes      | Geregistreerd voertuigtype voor metingsdoeleinden. |
-| `type`                | string         | no       | Zie tabel Vehicle.type                             | \*      |
-| `propulsion`          | string[]       | no       | Zie tabel Vehicle.propulsion                       |
-| `appearance`          | string         | no       | Zie tabel Vehicle.appearance                       | \*      |
-| `state`               | VehicleState[] | no       | Zie tabel VehicleState                             |
-| `accessoires`         | Accessoire[]   | no       | Zie tabel Accessoire                               | \*      |
-| `owner`               | string         | no       | Zie tabel Vehicle.owner                            | \*      |
+Alternatief voor expliciete voertuigtyperingen.
+
+| Field                 | Type      | Required | Description                                        | ProRail |
+| --------------------- | --------- | -------- | -------------------------------------------------- | ------- |
+| `canonicalIdentifier` | string    | yes      | Geregistreerd voertuigtype voor metingsdoeleinden. |
+| `label`               | string    | no       | Leesbare naam van voertuigtype                     |         |
+| `vehicle`             | Vehicle[] | yes      | Zie tabel Vehicle                                  |
 | {.data}               |
 
 Dan kun je op plekken waar `Vehicle` object wordt verwacht, óók een `CanonicalVehicle.canonicalIdentifier` string hebben.
