@@ -549,6 +549,8 @@ Classificatie naar wettelijke voertuigcategorie.
 | `x`     | 0x398 = (dec) 920 | Sterk afwijkend: nl. b,f,d,t,g | \*      |
 | {.data} |
 
+<aside class='issue' data-number='10'></aside>
+
 #### `Vehicle.owner`
 
 | ID      | Eigenaar | Omschrijving                 | ProRail |
