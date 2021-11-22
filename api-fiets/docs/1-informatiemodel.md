@@ -534,19 +534,19 @@ Classificatie naar wettelijke voertuigcategorie.
 
 #### `Vehicle.appearance`
 
-| ID      | Verschijningsvorm              | ProRail |
-| ------- | ------------------------------ | ------- |
-| `k`     | Kinderfiets                    |
-| `r`     | Racefiets                      |
-| `l`     | Ligfiets                       |
-| `b`     | Bakfiets / Transportfiets      |
-| `f`     | Fietskar                       |
-| `v`     | Vouwfiets                      |
-| `m`     | Mountainbike                   |
-| `d`     | Driewieler                     |
-| `t`     | Tandem                         |
-| `g`     | Gehandicaptenvoertuig          |
-| `x`     | Sterk afwijkend: nl. b,f,d,t,g | \*      |
+| ID      | Hex?              | Verschijningsvorm              | ProRail |
+| ------- | ----------------- | ------------------------------ | ------- |
+| `k`     | 0x1               | Kinderfiets                    |
+| `r`     | 0x2               | Racefiets                      |
+| `l`     | 0x4               | Ligfiets                       |
+| `b`     | 0x8               | Bakfiets / Transportfiets      |
+| `f`     | 0x10              | Fietskar                       |
+| `v`     | 0x20              | Vouwfiets                      |
+| `m`     | 0x40              | Mountainbike                   |
+| `d`     | 0x80              | Driewieler                     |
+| `t`     | 0x100             | Tandem                         |
+| `g`     | 0x200             | Gehandicaptenvoertuig          |
+| `x`     | 0x398 = (dec) 920 | Sterk afwijkend: nl. b,f,d,t,g | \*      |
 | {.data} |
 
 #### `Vehicle.owner`
