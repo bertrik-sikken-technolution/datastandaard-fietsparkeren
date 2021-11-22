@@ -15,6 +15,11 @@ De velden en zoekfuncties die in deze datastandaard zijn opgenomen, MOETEN worde
 | `dynamicData` | DynamicData | no       | Dynamische data (bezettingsdata, fietstellingen, ...) |
 | {.data}       |
 
+<figure>
+<img src="docs/objecten.drawio.svg">
+<figcaption>Overzicht relaties tussen statische en dynamische gegevenselementen</figcaption>
+</figure>
+
 ### Surveys – Onderzoeken
 
 Het datablok Survey bevat data over het onderzoek. Geïnitieerd door wie? Uitgevoerd door wie? Wanneer? Waar? Al deze informatie kan worden ingestuurd, maar is niet verplicht.
@@ -488,12 +493,19 @@ Het was alleen niet een kenmerkend onderscheid binnen de telling waarin de canon
 
 #### `Vehicle.parkState`
 
-| ID      | Omschrijving       | ProRail |
-| ------- | ------------------ | ------- |
-| `i`     | In voorziening     | \*      |
-| `p`     | nabij voorziening  | \*      |
-| `x`     | buiten voorziening | \*      |
+| ID      | Omschrijving                  | ProRail |
+| ------- | ----------------------------- | ------- |
+| `i`     | In voorziening                |         |
+| `j`     | In voorziening, juist gestald | \*      |
+| `k`     | In voorziening, neemt plek in | \*      |
+| `p`     | nabij voorziening             | \*      |
+| `x`     | buiten voorziening            | \*      |
 | {.data} |
+
+“In voorziening” betekent twee dingen, wat voor een bepaalde Survey geëxpliciteerd moet worden:
+
+- juist gestald in de voorziening;
+- neemt 1 plek in de voorziening.
 
 #### `Vehicle.type`
 
