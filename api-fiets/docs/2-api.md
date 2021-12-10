@@ -1,42 +1,169 @@
-## API
+# REST-API
 
-### Algemeen - wrapping
+Het informatiemodel beschreven in <a href='#dataschema-s'></a> bepaalt in algemene zin de objecttypen en eigenschappen van deze datastandaard.
+Een implementatie van de datastandaard MOET ook een REST-API volgens deze sectie aanbieden.
+Een implementatie MAG ook andere uitwisselingmogelijkheden aanbieden, zolang dat op een manier is die consistent is met de semantiek van <a href='#dataschema-s'></a>.
 
-Alle responses van GET-requests met meer dan één resultaat zijn gestoken in een wrapper-object `result`.
-Implementaties kunnen zo metadata over de resultaten, zoals paginering, gebruikte filters etc. meegeven.
+Deze REST-API veronderstelt communicatie over HTTP [[rfc7231]] en met gebruik van JSON [[ECMA-404]].
 
-Responses van GET-requests die expliciet om één object vragen, wrappen dit resultaat niet.
+## Algemeen
 
+### Kardinaliteit
+
+De aangegeven kardinaliteit geldt voor bij het insturen van gegevens.
+Bij het uitleveren van gegevens MAG een implementatie sommige gegevens achterwege laten.
+
+_De rest van deze sectie is niet-normatief._
+
+Een implementatie kan bijv. uit overwegingen op het gebied van privacy of concurrentiegevoeligheid bepaalde gegevens achterwege laten.
+
+### Onbekende eigenschappen of waardes
+
+Een implementatie MAG onbekende waardes of onverwachte datatypes afwijzen.
+Een user agent MAG onbekende waardes of onverwachte datatypes afwijzen.
+
+Een implementatie MAG altijd meer eigenschappen versturen naar een client.
+Een user agent MOET onbekende eigenschappen accepteren.
+
+Een implementatie MOET meer eigenschappen accepteren van een client.
+Een implementatie MAG onbekende eigenschappen afwijzen.
+
+### Resource identifiers
+
+Verschillende objecttypen hebben de eigenschap `id` (namelijk:
+{{Organisation.id}},
+{{ParkingFacility.id}},
+{{Section.id}},
+{{Survey.id}},
+{{SurveyArea.id}}).
+De waarde hiervan wordt ook wel [[=ResourceIdentifier=]] genoemd.
+Ook worden koppelingen tussen objecttypen gelegd o.b.v. de waarde van deze eigenschap.
+
+Steeds geldt bij `id` het volgende, wanneer er een nieuwe [[=Resource=]] wordt aangemaakt:
+
+- Een implementatie MAG een door de client gegenereerde [[=ResourceIdentifier=]] accepteren.
+- Een implementatie MAG een door de client gegenereerde [[=ResourceIdentifier=]] afwijzen als het niet aan eigen eisen voldoet.
+- Een implementatie MOET het `id` genereren indien het niet ingestuurd is.
+
+Steeds geldt bij `id` het volgende, wanneer er al een Resource met die `id` bestaat:
+
+- Indien een implementatie eigenaarschap (<a href='#eigenaarschap'></a>) bijhoudt, en de inzender is niet eigenaar, dan MOET het verzoek worden afgewezen (`400 Bad Request`).
+- Indien een implementatie eigenaarschap (<a href='#eigenaarschap'></a>) bijhoudt, en de inzender is wel eigenaar, dan MAG de resource worden geüpdatet.
+
+Steeds geldt bij eigenschappen die verwijzen naar een [[=ResourceIdentifier=]]:
+
+- Een implementatie MOET het verzoek afwijzen als er geen resource met die `id` bestaat.
+
+<aside class="note" title="VeiligStallen">
+
+De implementatie van VeiligStallen genereert {{Survey.id}}s op basis van gemeente-code, {{Survey.authority}} en {{Survey.contractor}}.
+
+</aside>
+
+### Eigenaarschap
+
+Een implementatie kan op verschillende wijzes eigenaarschap van een [[=Resource=]] vaststellen en bijhouden.
+
+- Een implementatie MAG authentication- en authorization-gegevens (<a href='#beveiliging'></a>) gebruiken om eigenaarschap van een Resource vast te leggen.
+- Een implementatie MAG updateverzoeken aan een resource accepteren van een eigenaar van die resource.
+- Een implementatie MAG updateverzoeken afwijzen als het niet aan eigen eisen voldoet.
+- Een implementatie MAG updateverzoeken aan een resource afwijzen als de eigenaar van die resource, niet het verzoek heeft verstuurd.
+
+Verschillende objecttypen hebben de eigenschap `authority` (namelijk:
+{{Survey.authority}},
+{{SurveyArea.authority}},
+{{ParkingFacility.authority}},
+{{Section.authority}}).
+
+Steeds geldt bij een resource met een `authority` het volgende:
+
+- Een implementatie MAG updateverzoeken accepteren als er een geldige {{Survey}} bestaat, waarvan de {{Survey.authority}} overeenkomt met de {{ParkingFacility.authority}} of {{Section.authority}}.
+
+_De rest van deze sectie is niet normatief._
+
+Deze authority zou de eigenaar van de resources moeten zijn, maar in de regel voeren aannemers de data in.
+Daarom kan een vergelijking plaatsvinden om
+
+### Geldigheid door de tijd
+
+Verschillende objecttypen hebben het eigenschap-paar `validFrom` (geldig vanaf) en `validThrough` (geldig tot en met):
+{{SurveyArea.validFrom}}, {{ParkingFacility.validFrom}}, {{Section.validFrom}},
+{{SurveyArea.validThrough}}, {{ParkingFacility.validThrough}}, {{Section.validThrough}}.
+
+Hierbij geldt steeds het volgende:
+
+- Een implementatie MOET een update afwijzen als de waarde {{DynamicParkingFacility.timestamp}} voortijdig is aan de waarde van {{ParkingFacility.validFrom}}.
+- Een implementatie MOET een update afwijzen als de waarde {{DynamicSection.timestamp}} voortijdig is aan de waarde van {{Section.validFrom}}.
+
+- Een implementatie MOET een update afwijzen als de waarde {{DynamicParkingFacility.timestamp}} natijdig is aan de waarde van {{ParkingFacility.validThrough}}.
+- Een implementatie MOET een update afwijzen als de waarde {{DynamicSection.timestamp}} natijdig is aan de waarde van {{Section.validThrough}}.
+
+- De wijziging van een kenmerk maakt een nieuwe instantie noodzakelijk:
+  - Het tijdstip van de wijziging minus één is de `validThrough` van de oude instantie.
+    - Vanwege de “tot en met”-betekenis, MOET er één eenheid van de meetresolutie worden afgetrokken.
+    - Bijvoorbeeld: bij een seconderesolutie: - 1 seconde.
+    - Bijvoorbeeld: bij een dagresolutie: - 1 dag.
+  - Het tijdstip van de wijziging is de `validFrom` van de nieuwe instantie.
+
+### <dfn>`ResultWrapper`</dfn>
+
+Endpoints met meerdere resultaten MOETEN in een `ResultWrapper` gestoken zijn.
+Implementaties MOGEN metadata over de resultaten meegeven aan de `ResultWrapper`, zoals paginering, gebruikte filters, etc.
+Endpoints met expliciet één resultaat MOGEN NIET via een `ResultWrapper` uitgeleverd worden.
+
+| Eigenschap                               | Type | Kardinaliteit | Beschrijving           |
+| ---------------------------------------- | ---- | ------------- | ---------------------- |
+| <dfn data-dfn-for="ResultWrapper">result | `[]` | 1..N          | Verzameling van items. |
+| {.data def}                              |
+
+_De rest van deze sectie is niet normatief._
+
+De ResultWrapper zorgt ervoor dat het type van wat een GET-request retourneert altijd een object (`{}`) is.
+
+<aside class='note' title="Een mogelijke definitie van ResultWrapper in TypeScript">
+
+```js
+class ResultWrapper<T> {
+  result: T[];
+}
+```
+
+</aside>
 <aside class='example' title="Gewrapped resultaat meervoudige bevraging">
 
+```http
+GET /static
 ```
-`GET /static`
+
+```json
 {
-  "result": [
-    { "id": ..., ... },
-    { "id": ..., ... }
-  ]
+  "result": [{ "id": "..." }, { "id": "..." }]
 }
 ```
 
 </aside>
 <aside class='example' title="Niet-gewrapped resultaat enkelvoudige bevraging">
 
+```http
+GET /organisations/defietsentellers
 ```
-`GET /organiations/defietsentellers`
+
+```json
 {
-  "id": "defietsentellers,
-  "name: "De Fietsentellers BV"
+  "id": "defietsentellers",
+  "name": "De Fietsentellers BV"
 }
 ```
 
 </aside>
 
-Verwijzingen naar data-identifiers VEREIST dat die identifiers reeds bestaan.
+### Relaties tussen objecttypen
 
-TODO: Insert plaatje van Otto.
+Onderstaande <a href='#relatie-objecttypen'></a> verduidelijkt de koppelingen die er bestaan tussen de verschillende objecttypen.
 
-### API 3 — data opslaan
+<figure id='relatie-objecttypen'><img src='docs/objecten.drawio.svg'><figcaption>Overzicht relaties tussen statische en dynamische gegevenselementen.</figcaption></figure>
+
+## API 3 — data opslaan
 
 API 3 is de ontvangende zijde van de dataportal API.
 Straattellers of stallingssoftware kunnen met POST-requests hun data opsturen naar het dataportal.

@@ -1,0 +1,19 @@
+{
+  "id": "prorail-maaiveld-2021",
+  "name": "Prorail maaiveldtellingen",
+  "authorityId": "prorail",
+  "geoLocation": {...},
+  "canonicalIdentifiers": [
+    {
+      "canonicalIdentifier": "nl.prorail.fietsparkeren.type.A",
+      "label": "Normfiets",
+      "vehicle": [
+        {
+          "type": "f",
+          "owner": "p"
+        }
+      ]
+    },
+    {...}
+  ]
+}

@@ -1,0 +1,13 @@
+{
+	"timestamp": "2021-11-23T12:00:00Z",
+	"survey": "roosendaal-stationsgebied",
+	"parkingCapacity":	100,
+	"vacantSpaces":	10, 
+	"occupiedSpaces": 90, 
+	"totalParked": 90,
+	"capacityPerParkingSpaceOf": CapacityPerParkingSpaceOf[],
+	"parkedByVehicleType": [
+		{ "vehicle": {"type": "b"}, "numberOfVehicles": 10, "parkState": "i"},
+		{ "canonicalVehicleIdentifier": "nl.prorail.fietsparkeren.type.A", "numberOfVehicles": 80 }
+	]
+}

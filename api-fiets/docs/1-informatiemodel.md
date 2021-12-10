@@ -1,73 +1,95 @@
-## Dataschema’s
+# Dataschema’s
 
-De data in de datastandaard valt uiteen in drie hoofdblokken:
+Deze datastandaard definieert een aantal objecttypen die betrekking hebben op fietsparkeervoorzieningen en tellingen van gestalde fietsen.
+Het omvat definities, gebruik en API’s voor:
 
-1. data over het onderzoek (_survey_)
-2. statische data (_static data_): dit betreft enerzijds onderzoeksgebieden (_survey areas_) en anderzijds gegevens over de meetgebieden (_parking facilities_ en _sections_): deze data verandert zelden of nooit.
-3. dynamische data (_dynamische data_): tellingen en metingen in de meetgebieden
-
-De velden en zoekfuncties die in deze datastandaard zijn opgenomen, MOETEN worden ondersteund door de dataportal. Het staat de dataportals vrij om zelf extra datavelden en extra functionaliteit te bieden.
-
-| Field         | Type        | Required | Description                                           |
-| ------------- | ----------- | -------- | ----------------------------------------------------- |
-| `survey`      | Survey      | no       | Gegevens over het onderzoek                           |
-| `staticData`  | StaticData  | no       | Statische data (sectienaam, adres, positie, ...)      |
-| `dynamicData` | DynamicData | no       | Dynamische data (bezettingsdata, fietstellingen, ...) |
-| {.data}       |
+1. Uitgebreide beschrijvingen van fietstypen ({{Vehicle}}).
+2. Fietsenstallingen en fietsparkeervoorzieningen ({{ParkingFacility}}), ook op detailniveau ({{Section}});
+3. Tellingen binnen die (deel)voorzieningen ({{DynamicParkingFacility}} en {{DynamicSection}});
+4. Vastgestelde onderzoeks(deel)gebieden ({{SurveyAreas}}) en tellingen ({{Survey}});
 
 <figure>
 <img src="docs/objecten.drawio.svg">
 <figcaption>Overzicht relaties tussen statische en dynamische gegevenselementen</figcaption>
 </figure>
 
-### Surveys – Onderzoeken
+## Tellingen en inwinningen
 
-Het datablok Survey bevat data over het onderzoek. Geïnitieerd door wie? Uitgevoerd door wie? Wanneer? Waar? Al deze informatie kan worden ingestuurd, maar is niet verplicht.
+Een {{Survey}} groepeert een bron: het representeert een onderzoek of inwinning, incidenteel of doorlopend, in opdracht van een bepaalde {{Organisation}}.
+Daarbij MOGEN één of meerdere onderzoeksgebieden, {{SurveyAreas}}, worden meegegeven: een geografische afbakening van een gebied, dat voor bepaalde rapportages of inzichten nuttig is.
+Daarvoor worden dan overlappende {{ParkingFacilities}} meegenomen: een SurveyArea is niet een telgebied zelf.
 
-Bij het insturen van een Survey kan de dataportal ervoor kiezen de gebruiker zijn eigen `Survey.id` te laten kiezen. Inzender van de nieuwe Survey wordt eigenaar van deze inzending. Als dat het geval is, dient er een 400-error (Bad request) gegenereerd te worden als er een `Survey.id` worden gekozen dat al bestaat. In geval de inzender de eigenaar is van de bestaande survey, vindt er een update plaats. Ondersteuning van deze functionalitet is door het dataportal zelf in te bepalen.
+Een implementatie MAG de inzender ‘eigenaar’ laten worden van een Survey:
+dat houdt in dat andere inzenders NIET gegevens aan dat Survey MOGEN koppelen.
 
-Het `Survey.id` kan gebruikt worden om data van verschillende secties en bronnen te groeperen door dynamische data te labelen met het veld `Survey.id`. Zie voor meer details [Dynamic Data](#dynamische-data).
+_De rest van deze sectie is niet-normatief._
 
-> In grote lijnen kun je twee bronnen onderscheiden:
-> Enerzijds digitale systemen die permanent data kunnen rapporteren over bezetting,
-> en anderzijds tellingen die handmatig door tellers die een momentopname opgeven.
+Gegevens over het onderzoek —
+geïnitieerd door wie?
+Uitgevoerd door wie?
+Wanneer?
+Waar?
+—
+kan worden ingestuurd, maar is niet verplicht.
 
-#### `Survey`
+### <dfn>`Survey`
 
-Een survey bevat vaste gegevens over een onderzoek.
+Een Survey is een onderzoek of inwinning die incidenteel of doorlopend in opdracht van een bepaalde opdrachtgever wordt uitgevoerd door een of meerdere aannemers.
+Het vormt de bron van de meeste datasoorten in de datastandaard.
 
-| Field           | Type       | Required | Description                                                                                                                                                 |
-| --------------- | ---------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`            | string     | yes      | Een uuid, random of eventueel samengesteld. Indien bij een POST-request niet gegeven, dan maakt de dataportal zelf een ID en geeft deze terug in de respons |
-| `name`          | string     | yes      | Naam van het onderzoek                                                                                                                                      |
-| `authorityId`   | string     | no       | `Organisation.id` van de Opdrachtgever - Alleen te gebruiken voor insturen van data                                                                         |
-| `contractorIds` | string     | no       | `Organisation.id` van de contractors - Alleen te gebruiken voor insturen van data                                                                           |
-| `license`       | string     | no       | Licentie van het gebruik van de data                                                                                                                        |
-| `surveyArea`    | `string[]` | no       | ID van de onderzoeksgebieden die zijn meegenomen in het onderhavige onderzoek.                                                                              |
-| {.data}         |
+Een Survey
 
-Opdrachtgever en uitvoerder zijn consistent over de levensduur van de survey.
-De datastandaard stelt geen eisen aan de
+| Eigenschap                                                | Type                     | Kardinaliteit | Beschrijving                                                                |
+| --------------------------------------------------------- | ------------------------ | ------------- | --------------------------------------------------------------------------- |
+| <dfn data-dfn-for="Survey">id                             | `string`                 | 0..1          | Een [[=ResourceIdentifier=]].                                               |
+| <dfn data-dfn-for="Survey">name                           | `string`                 | 1             | Naam van het onderzoek.                                                     |
+| <dfn data-dfn-for="Survey">authority                      | `string`                 | 1             | {{Organisation.id}} van de opdrachtgever.                                   |
+| <dfn data-dfn-for="Survey">contractors                    | `string[]`               | 1..N          | {{Organisation.id}} van de uitvoerder.                                      |
+| <dfn data-dfn-for="Survey">license                        | `string`                 | 0..1          | Licentie voor het gebruik van de data (vormvrij).                           |
+| <dfn data-dfn-for="Survey">surveyArea                     | `string[]`               | 0..N          | De {{SurveyArea.id}} van de onderzoeksgebieden die dit onderzoek aandraagt. |
+| <dfn data-dfn-for="Survey">distinguishesVehicleCategories | {{CanonicalVehicle}}`[]` | 0..N          | De voertuigtypes die voor dit onderzoek worden onderscheiden in tellingen.  |
+| {.data def }                                              |
 
-<aside class="advisement">
+Opdrachtgever en uitvoerder zijn constant over de levensduur van de Survey.
+De datastandaard stelt geen eisen aan de vervanging van een Survey.
 
-De implementatie van VeiligStallen genereert Survey-ID's op basis van gemeente, `authority.id` en `contractor.id`.
+### <dfn>`Organisation`
 
+Een Organisation representeert een opdrachtgever of een uitvoerende instantie.
+
+| Eigenschap                            | Type     | Kardinaliteit | Beschrijving                  |
+| ------------------------------------- | -------- | ------------- | ----------------------------- |
+| <dfn data-dfn-for="Organisation">id   | `string` | 0..1          | Een [[=ResourceIdentifier=]]. |
+| <dfn data-dfn-for="Organisation">name | `string` | 1             | Naam van de instantie         |
+| {.data def}                           |
+
+### <dfn>`SurveyArea`
+
+Een Onderzoeksgebied is een geometrische afbakening, waarmee individuele stallingsvoorzieningen samen geselecteerd kunnen worden voor verdere verwerking.
+Bijvoorbeeld een stationsgebied, een strandboulevard of een uitgaansgebied.
+De datastandaard biedt deze mogelijkheid zodat verschillende partijen dezelfde analyses zouden kunnen uitvoeren, op basis van dezelfde contouren van een gebied.
+Ook voor historische vergelijkingen kunnen SurveyAreas worden gebruikt.
+
+<aside class=note>
+Geografische zoekopdrachten zijn ook mogelijk in de <a href='#rest-api'></a>, zonder dat er van SurveyAreas gebruik wordt gemaakt.
 </aside>
 
-#### `Organisation`
+Het is een hulpmiddel om {{ParkingFacilities}} in een bepaald gebied te selecteren.
+Er is geen geadminstreerde relatie tussen onderzoeksgebieden en stallingsvoorzieningen: dat is puur een geografische relatie.
 
-De gegevens over een opdrachtgever of een uitvoerende instantie.
+| Eigenschap                                   | Type                             | Kardinaliteit | Beschrijving                                                                                           |
+| -------------------------------------------- | -------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------ |
+| <dfn data-dfn-for="SurveyArea">id            | `string`                         | 0..1          | Een [[=ResourceIdentifier=]].                                                                          |
+| <dfn data-dfn-for="SurveyArea">geoLocation   | GeoJSON                          | 1..1          | Geografische afbakening volgens [[rfc7946]].                                                           |
+| <dfn data-dfn-for="SurveyArea">parent        | {{SurveyArea.id}} (`string`)     | 0..1          | Verwijzing naar een onderzoeksgebied van een hogerliggende orde.                                       |
+| <dfn data-dfn-for="SurveyArea">validFrom     | [[rfc3339]] date-time (`string`) | 0..1          | Begin geldigheid                                                                                       |
+| <dfn data-dfn-for="SurveyArea">validThrough  | [[rfc3339]] date-time (`string`) | 0..1          | Einde geldigheid                                                                                       |
+| <dfn data-dfn-for="SurveyArea">authority     | {{Organisation.id}} (`string`)   | 1..1          | Eigenaar van dit onderzoeksgebied. Alleen deze organisatie mag wijzigingen aanbrengen aan deze sectie. |
+| <dfn data-dfn-for="SurveyArea">name          | `string[]`                       | 0..N          | Naam die de eigenaar of inwinner aan dit onderzoeksgebied geeft.                                       |
+| <dfn data-dfn-for="SurveyArea">alternateName | `string[]`                       | 0..N          | Alternatieve namen of IDs die de eigenaar of inwinner aan dit onderzoeksgebied geeft.                  |
+| {.data def}                                  |                                  |               |
 
-| Field   | Type   | Required | Description                                      |
-| ------- | ------ | -------- | ------------------------------------------------ |
-| `id`    | string | yes      | Unieke id, bijv. CBS-code gemeente of provincie. |
-| `name`  | string | yes      | Naam van de instantie                            |
-| {.data} |
-
-(Hier zijn optioneel extra velden op te nemen, maar deze zijn geen onderdeel van de datastandaard)
-
-### Gebiedsindelingen
+## Stallingen, parkeervoorzieningen
 
 Statische data is die data van `SurveyAreas`, `ParkingFacility`s en `Section`s die niet of nauwelijks aan verandering onderhevig zijn.
 Het gaat vooral om de geografische afbakening.
@@ -90,138 +112,70 @@ Controleert het portal `Survey.ID` en `ParkingFacility.ID`.
 
 </aside>
 
-De parkeercapaciteit van een sectie lijkt op het eerste gezicht statisch. Toch is deze op advies van telinstanties niet opgenomen in de statische data. Wegwerkzaamheden en herindelingen van straten hebben te vaak invloed op de parkeercapaceit van straatsecties. In bewaakte stallingen kan het voorkomen dat bepaalde secties gedurende bepaalde periodes gereserveerd zijn.
+### <dfn>`ParkingFacility`
 
-#### `StaticData`
+Een ParkingFacility is elke plek waar voertuigen geparkeerd kunnen worden, bedoeld of onbedoeld: zoals een fietsenstalling, op het maaiveld, op een plein of een trottoir.
+Een ParkingFacility MAG onderverdeeld worden in één of meerdere {{Sections}}.
+Een ParkingFacility MOET een geometrie hebben, minimaal een punt op de kaart, maar bij voorkeur een vlakcontour.
 
-<aside class="advisement">
+Verdere kenmerken van de locatie, zoals openingstijden of bewaakt/onbewaakt worden op dit niveau geregistreerd en worden later verder uitgewerkt.
 
-Dit moet weg, omdat het alleen bij responses terug komt.
-Sowieso is het naamonderdeel Sectie niet meer juist, e.g. `StaticItems`.
+Wijzigingen in de onderliggende secties betekenen expliciet niet dat de parkeerlocatie wijzigt.
+Andersom betekent een nieuwe parkeerlocatie _wel_ dat ook de secties nieuw aangemaakt moeten worden -- zij verwijzen immers naar de parkeerlocatie waar ze toe behoren.
 
-</aside>
+Voor historische vergelijkingen kan op basis van de geometrie en/of `alternateName` bepaald worden of het om (min of meer) dezelfde parkeerlocatie gaat.
 
-| Field    | Type            | Required | Description                      |
-| -------- | --------------- | -------- | -------------------------------- |
-| `result` | StaticSection[] | yes      | Verzameling van statische items. |
-| {.data}  |
+| Eigenschap                                          | Type                             | Kardinaliteit | Beschrijving                                                             |
+| --------------------------------------------------- | -------------------------------- | ------------- | ------------------------------------------------------------------------ |
+| <dfn data-dfn-for="ParkingFacility">id              | `string`                         | 1             | Een [[=ResourceIdentifier=]].                                            |
+| <dfn data-dfn-for="ParkingFacility">geoLocation     | GeoJSON                          | 1..1          | Geografische afbakening volgens [[rfc7946]].                             |
+| <dfn data-dfn-for="ParkingFacility">name            | `string`                         | 0..1          | Namen voor de voorziening.                                               |
+| <dfn data-dfn-for="ParkingFacility">alternateName   | `string[]`                       | 0..N          | Alternatieve namen of IDs van de eigenaar of inwinner.                   |
+| <dfn data-dfn-for="ParkingFacility">securityFeature | {{SecurityFeature}}`[]`          | 0..N          | Beveiligingskenmerken                                                    |
+| <dfn data-dfn-for="ParkingFacility">allows          | {{Vehicle}}`[]`                  | 1..N          | Toegestane voertuigtypen voor deze parkeerlocatie.                       |
+| <dfn data-dfn-for="ParkingFacility">validFrom       | [[rfc3339]] date-time (`string`) | 0..1          | Zie <a href='#geldigheid-door-de-tijd'></a>.                             |
+| <dfn data-dfn-for="ParkingFacility">validThrough    | [[rfc3339]] date-time (`string`) | 0..1          | Zie <a href='#geldigheid-door-de-tijd'></a>.                             |
+| ~~<dfn data-dfn-for="ParkingFacility">authority~~   | {{Organisation.id}}              | 0..1          | Alleen deze eigenaar mag wijzigingen aanbrengen aan deze parkeerlocatie. |
+| {.data def}                                         |
 
-#### Survey Area
+#### Enum <dfn>`SecurityFeature`
 
-Een Onderzoeksgebied is een geometrische afbakening, waarmee individuele parkeerfaciliteiten samen geselecteerd kunnen worden voor verdere verwerking.
-Bijvoorbeeld een stationsgebied, een strandboulevard of een uitgaansgebied.
-De datastandaard biedt deze mogelijkheid zodat verschillende partijen dezelfde analyses zouden kunnen uitvoeren, op basis van de zelfde contouren van een gebied.
-Niet elk onderzoek hoeft zijn Survey Area op te slaan, aangezien het platform geografische afbakeningen in een query ondersteunt.
+| Enum                   | Beschrijving                                  |
+| ---------------------- | --------------------------------------------- |
+| `CameraSurveillance`   | Camerabewaking aanwezig.                      |
+| `LockerService`        | Fietskluizen aanwezig.                        |
+| `PersonnelSupervision` | De stalling is bemenst.                       |
+| `ElectronicAccess`     | Een elektronisch toegangssysteem is aanwezig. |
+| {.data def}            |
 
-Het is een hulpmiddel om parkeerlocaties in een bepaald gebied te selecteren.
-Er is geen vaste relatie tussen onderzoeksgebieden en parkeerfaciliteiten: dat is puur een geografische relatie.
-Ze zijn ook nuttig voor historische vergelijkingen.
+### <dfn>`Section`
 
-<aside class="example">
+Een {{ParkingFacility}} bestaat uit 1 of meerdere Sections.
+Binnen een sectie komt bij voorkeur één type parkeervoorziening voor: bijv. alleen etagerekken of alleen plekken voor buitenmodelfietsen.
+Voordeel hiervan is dat de bezetting (zie <a href='#tellingen-metingen-en-capaciteit'></a>) herleid kan worden tot een bepaald type parkeervoorziening.
 
-Met er een onderscheid gemaakt worden in niveaus, voor bijv.
-
-- Onderzoeksgebied
-- Deelonderzoeksgebied
-
-en voor:
-
-- CBS Gemeente
-- CBS Buurt
-- CBS Wijk
-
-Moet er niet in de datastandaard niet een `@type`-veld hiervoor?
-Dan moet je ook de parent ervan aangeven.
-
-</aside>
-
-| Field          | Type                       | Required | Description                                                                                                            |
-| -------------- | -------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `id`           | string                     | yes      | Een uuid, random of eventueel samengesteld                                                                             |
-| `geoLocation`  | GeoJSON (object)           | yes      | Geografische afbakening van deze sectie volgens [[rfc7946]]. Kan gebruikt worden voor geo-zoekopdrachten.              |
-| `validFrom`    | [[rfc3339]] timestamp      | no       | Begin geldigheid                                                                                                       |
-| `validThrough` | [[rfc3339]] timestamp      | no       | Einde geldigheid                                                                                                       |
-| `authority`    | `Organisation.id` (string) | yes      | organisationId: Eigenaar van dit onderzoeksgebied. Alleen deze organistatie mag wijzigingen aanbrengen aan deze sectie |
-| `label`        | string[]                   | no       | Naam die de eigenaar of inwinner aan dit onderzoeksgebied geeft.                                                       |
-| `altLabel`     | string[]                   | no       | Alternatieve namen of IDs die de eigenaar of inwinner aan dit onderzoeksgebied geeft.                                  |
-| `parent`       | `SurveyArea.id` (string)   | no       | Verwijzing naar een onderzoeksgebied van een hogerliggende orde.                                                       |
-| {.data}        |
-
-#### Parking Facility
-
-Een Parkeerlocatie is een plek waar voertuigen geparkeerd kunnen worden, zoals een fietsenstalling, een plein of een trottoir.
-Een parkeerlocatie kan onderverdeeld worden in 1 of meerdere [secties](#sections).
-De parkeerlocatie heeft altijd een geometrie, minimaal een punt op de kaart, maar bij voorkeur een contour.
-Kenmerken van de locatie, zoals openingstijden of bewaakt/onbewaakt worden op dit niveau geregistreerd (dit wordt later uitgewerkt, in lijn met VeloPark en SPDP).
-
-Als een van onderstaande kenmerken van de parkeerlocatie verandert, moet de eigenaar (`authority`) een nieuwe parkeerlocatie aanmaken.
-Het veld `validThrough` wordt dan ingevuld om de voorganger ongeldig te maken.
-Wijzigingen in de onderliggende secties betekenen dus expliciet niet dat de parkeerlocatie wijzigt.
-Andersom betekent een nieuwe parkeerlocatie wel dat ook de secties nieuw aangemaakt moeten worden -- zij verwijzen immers naar de parkeerlocatie waar ze bijhoren.
-
-Voor historische vergelijkingen, kan op basis van de geometrie en/of `altLabel` bepaald worden of het om (min of meer) dezelfde parkeerlocatie gaat.
-
-<aside class="note">
-
-Wie bepaalt `altLabel` vs. `label`, vs. de `id`s van alles?
-De eigenaar; alternatieve IDs van de inwinnaar moet die zelf beheren.
-
-</aside>
-
-| Field             | Type                  | Required    | Description                                                                                               |
-| ----------------- | --------------------- | ----------- | --------------------------------------------------------------------------------------------------------- |
-| `id`              | string                | yes         | Een uuid, random of eventueel samengesteld                                                                |
-| `geoLocation`     | GeoJSON               | no          | Geografische afbakening van deze sectie volgens [[rfc7946]]. Kan gebruikt worden voor geo-zoekopdrachten. |
-| `validFrom`       | [[rfc3339]] timestamp | no          | Dit item is geldig vanaf dit tijdstip.                                                                    |
-| `validThrough`    | [[rfc3339]] timestamp | no          | Dit item is geldig tot dit tijdstip.                                                                      |
-| `altLabel`        | string[]              | conditional | Alternatieve namen of IDs van de eigenaar of inwinner.                                                    |
-| `securityFeature` | `SecurityFeature[]`   | conditional | Beveiligingskenmerken                                                                                     |
-| `allowedVehicles` | `Vehicle[]`           | conditional | Toegestane voertuigtypen voor deze parkeerlocatie.                                                        |
-| `authority`       | `Organisation.id`     | no          | Alleen deze eigenaar mag wijzigingen aanbrengen aan deze parkeerlocatie.                                  |
-| {.data}           |
-
-##### Beveiligingsvoorzieningen
-
-| SecurityFeature       | Desc                          |
-| --------------------- | ----------------------------- |
-| Camera Surveillance   | Camerabewaking                |
-| Locker Service        | Aanwezigheid van fietskluizen |
-| Personnel Supervision | Bemenste stalling             |
-| Electronic Access     | Toegang                       |
-| Unsupervised          | Onbewaakte stalling (!)       |
-| {.data}               |
-
-#### Section
-
-Een parkeerlocatie bestaat uit 1 of meerdere secties.
-Binnen een sectie komt bij voorkeur één type parkeervoorziening voor.
-Bijvoorbeeld: alleen etagerekken of alleen plekken voor buitenmodelfietsen.
-Voordeel hiervan is dat de bezetting (zie dynamische data) herleid kan worden tot een bepaald type parkeervoorziening.
-En dat er specifiek voor bepaalde locaties logische keuzen kunnen worden gemaakt.
-
-Er is een grote vrijheid in het indelen in secties van een parkeerlocatie.
+Er is een grote vrijheid in het indelen in secties van een ParkingFacility.
 Bij digitale systemen kan de onderverdeling die in het systeem gemaakt wordt, leidend zijn.
 Bijvoorbeeld: wordt in een parkeerverwijssysteem onderscheid gemaakt tussen boven- en onderlaag in een etagerek,
 dan bevelen we aan hiervoor aparte secties aan te maken.
 
-Er is een vaste administratieve koppeling tussen sectie en de parkeerlocatie waar het deel van uitmaakt.
+Er is een vaste administratieve koppeling tussen Section en de ParkingFacility waar het deel van uitmaakt.
 Daarom is ook een geometrie van een sectie niet noodzakelijk om aan te leveren.
 Voor bijvoorbeeld handmatige tellers kan dat wel handig zijn.
 
-> Ook hier altLabel, label en id expliciet maken.
-
-| Field             | Type                  | Required | Description                                                                                                   |
-| ----------------- | --------------------- | -------- | ------------------------------------------------------------------------------------------------------------- |
-| `id`              | string                | yes      | Een uuid, random of eventueel samengesteld                                                                    |
-| `parkingFacility` | `ParkingFacility.id`  | yes      | ID die verwijst naar de parkeerlocatie waar het deel van uitmaakt.                                            |
-| `altLabel`        | string                | no       | Private id die een contractor hanteert deze sectie                                                            |
-| `geoLocation`     | GeoJSON               | no       | Geografische afbakening van deze sectie volgens [[rfc7946]]. Kan gebruikt worden voor geo-zoekopdrachten.     |
-| `spaces`          | `Space[]`             | no       | De types parkeervoorziening.                                                                                  |
-| `validFrom`       | [[rfc3339]] timestamp | no       | Vanaf dit tijdstip mag er dynamische data in deze sectie worden geschreven                                    |
-| `validThrough`    | [[rfc3339]] timestamp | no       | Tot dit tijdstip mag er dynamische data in deze sectie worden geschreven                                      |
-| `level`           | number                | no       | De etage (-1, 0 = begane grond, 1, etc.) in de parkeerlocatie waar deze sectie zich bevindt.                  |
-| `authority`       | OrganisationID        | no       | organisationId: Eigenaar van deze sectie. Alleen deze organistatie mag wijzigingen aanbrengen aan deze sectie |
-| {.data}           |
+| Eigenschap                                  | Type                              | Kardinaliteit | Beschrijving                                                                                                               | ProRail |
+| ------------------------------------------- | --------------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------- | ------- |
+| <dfn data-dfn-for='Section'>id              | `string`                          | 0..1          | Een [[=ResourceIdentifier=]].                                                                                              |
+| <dfn data-dfn-for='Section'>parkingFacility | {{ParkingFacility.id}} (`string`) | 1             | Koppeling naar de ParkingFacility waar de sectie deel van uitmaakt.                                                        |
+| <dfn data-dfn-for="Section">name            | `string`                          | 0..1          | Namen voor de voorziening.                                                                                                 |
+| <dfn data-dfn-for="Section">alternateName   | `string[]`                        | 0..N          | Alternatieve namen of IDs van de eigenaar of inwinner.                                                                     |
+| <dfn data-dfn-for='Section'>geoLocation     | GeoJSON                           | 0..1          | Geografische afbakening volgens [[rfc7946]].                                                                               |
+| <dfn data-dfn-for='Section'>parkingSpaceOf  | {{ParkingSpaceOf}}`[]`            | 1..N          | De types parkeervoorziening.                                                                                               |
+| <dfn data-dfn-for='Section'>level           | `number`                          | 0..1          | De etage in de ParkingFacility waar deze sectie zich bevindt. -1 = onder maaiveld, 0 = maaiveld (default), 1 = verdieping. |
+| <dfn data-dfn-for='Section'>validFrom       | [[rfc3339]] date-time (`string`)  | 0..1          | Begin geldigheid. Zie <a href='#geldigheid-door-de-tijd'></a>.                                                             |
+| <dfn data-dfn-for='Section'>validThrough    | [[rfc3339]] date-time (`string`)  | 0..1          | Einde geldigheid. Zie <a href='#geldigheid-door-de-tijd'></a>.                                                             |
+| <dfn data-dfn-for='Section'>authority       | {{Organisation.id}} (`string`)    | 0..1          | Eigenaar van deze sectie.                                                                                                  |
+| {.data def}                                 |
 
 Een sectie kan een kortere `validThrough` hebben dan de parkeerlocatie waartoe het behoort:
 als bijvoorbeeld een rek vervangen wordt door een buitenmodelvak.
@@ -230,99 +184,22 @@ Bij handmatige tellingen is het goed denkbaar dat een veldwerker een extra secti
 
 <div class='issue' data-number="4"></div>
 
-#### Places
+### <dfn>`ParkingSpaceOf`
 
-Individuele parkeerplekken (_Places_) zijn voorzien als een toekomstige uitbreiding.
+Omdat niet individuele parkeerplekken gemodelleerd worden, representeert ParkingSpaceOf een homogene groep parkeerplekken.
+De homogeniteit kan op basis van type parkeervoorziening ({{ParkingSpaceType}}) zijn, op basis van het voertuigtype waarvoor het bedoeld is ({{Vehicle}}) of een combinatie van beide.
 
-### Dynamische data
+| Eigenschap                                  | Type            | Kardinaliteit | Beschrijving                                                                                 | ProRail |
+| ------------------------------------------- | --------------- | ------------- | -------------------------------------------------------------------------------------------- | ------- |
+| <dfn data-dfn-for='ParkingSpaceOf'>type     | `string`        | 0..1          | Type parkeervoorziening, zie enum {{ParkingSpaceType}}.                                      | \*      |
+| <dfn data-dfn-for='ParkingSpaceOf'>vehicles | {{Vehicle}}`[]` | 0..N          | Deze parkeervoorziening is uitsluitend voor voertuigen voldoend aan de genoemde beperkingen. | \*      |
+| {.data def}                                 |
 
-Dynamische data zijn de tellingen of metingen van het aantal plekken en/of het aantal geparkeerde voertuigen.
-Dynamische data kan per sectie aangeleverd worden en per parkeerlocatie of per sectie uitgeleverd worden.
-Teldata van de secties van één parkeerlocatie moeten dan wel op hetzelfde moment geüpdatet worden.
+Minstens één van {{ParkingSpaceOf.type}} of {{ParkingSpaceOf.vehicles}} MOET voorkomen bij een ParkingSpaceOf.
 
-Merk op dat de totalen van de parkeerlocatie samen met de secties aangeleverd wordt:
-het eerste tellings/metingsobject (in de ingestuurde JSON-array) beschrijft de parkeerlocatie, de andere de
+#### Enum <dfn>`ParkingSpaceType`
 
-> Biedt `@type` hier een oplossing voor?
-> Of toch een JSON-objectstructuur?
-
-> **Implementatiespecifiek**:
-> Totalen van de parkeerlocatie kunnen dan met de updates vooraf berekend worden of pas bij uitlevering.
-
-#### `DynamicData`
-
-> Ook hier laten vallen, evt. naamgeving aanpassen.
-
-| Field    | Type             | Required | Description                           |
-| -------- | ---------------- | -------- | ------------------------------------- |
-| `result` | DynamicSection[] | yes      | Verzameling secties met stallingsdata |
-| {.data}  |
-
-#### `DynamicParkingFacility`
-
-> Maak onderscheid "Required" afhankelijk van of je instuurt of uitleest.
-
-| Field                 | Type                    | Required    | Description                                                                             |
-| --------------------- | ----------------------- | ----------- | --------------------------------------------------------------------------------------- |
-| `parkingFacility`     | `ParkingFacility.id`    | yes         | Parkeerlocatie waar deze meting over gaat.                                              |
-| `timestamp`           | [[rfc3339]] timestamp   | conditional | Tijdstip van de meting.                                                                 |
-| `surveyId`            | string                  | conditional | Id van de survey waartoe deze meting behoort                                            |
-| `parkingCapacity`     | number                  | conditional | Totaal aantal plekken, verplicht als één of meerdere onderdelen dit gemeten hebben.     |
-| `vacantSpaces`        | number                  | conditional | Aantal vrije plekken.                                                                   |
-| `occupiedSpaces`      | number                  | conditional | Aantal bezette plekken, verplicht als één of meerdere onderdelen dit gemeten hebben.    |
-| `totalParked`         | number                  | conditional | Aantal getelde voertuigen, verplicht als één of meerdere onderdelen dit gemeten hebben. |
-| `count`               | Count[]                 | no          | Verzameling van Count-objecten                                                          |
-| `capacityBySpaceType` | `CapacityBySpaceType[]` | no          | Capaciteit per type parkeervoorziening, over de hele stalling. Sommering bij indienen.  |
-| `space` **kan eruit** | Space                   | no          | Alleen toegestaan als één of meerdere onderdelen dit gemeten hebben.                    |
-| `note`                | Note                    | no          | Notities over de meting in deze sectie                                                  |
-| {.data}               |
-
-Parkeercapaciteit wordt dynamisch geregistreerd, zodat kleine veranderingen aan de parkeervoorzieningen niet tot een nieuwe ParkingFacility leidt.
-
-#### `DynamicSection`
-
-Een telling of meting kan gaan over het aantal parkeerplekken (evt. naar type) en/of
-het aantal geparkeerde voertuigen (evt. naar type) in een sectie.
-
-| Field                 | Type                    | Required    | Description                                                                                        |
-| --------------------- | ----------------------- | ----------- | -------------------------------------------------------------------------------------------------- |
-| `section`             | `Section.id`            | yes         | Sectie waarop deze telling/meting betrekking heeft.                                                |
-| `timestamp`           | [[rfc3339]] timestamp   | yes         | Tijdstip van de meting                                                                             |
-| `surveyId`            | string                  | yes         | Id van de survey waartoe deze meting behoort                                                       |
-| `parkingCapacity`     | number                  | conditional | Totaal aantal plekken, verplicht bij capaciteitstelling.                                           |
-| `totalParked`         | number                  | conditional | Totaal aantal geparkeerde voertuigen, verplicht bij telling van het aantal geparkeerde voertuigen. |
-| `capacityBySpaceType` | `CapacityBySpaceType[]` | no          | Capaciteit per type parkeervoorziening                                                             |
-| `parkedByVehicleType` | `VehicleTypeCount[]`    | no          | Telling per geparkeerd voertuigtype                                                                |
-| `occupiedSpaces`      | number                  | no          | Aantal bezette plekken, berekend o.b.v. `capacityBySpaceType` en `parkedByVehicleType`             |
-| {.data}               |
-
-De velden surveyId, authorityId en contractorId kunnen gebruikt worden bij het filteren van data bij de zoekopdrachten van de API's 4 en 5.
-Je zou bijvoorbeeld kunnen alle metingen van een bepaald onderzoek die zijn uitgevoerd door een bepaalde contractor kunnen opvragen. Zie _API Requests_ voor meer details over zoekopdrachten.
-
-#### `DynamicPlace`
-
-Dit is voor later voorzien.
-
-### `CapacityBySpaceType`
-
-| Field              | Type         | Required | Description                                                                                  | ProRail |
-| ------------------ | ------------ | -------- | -------------------------------------------------------------------------------------------- | ------- |
-| `type`             | `Space.type` | no       | SpaceTypeID; tenminste 1 veld dient gegeven te zijn                                          | \*      |
-| `vehicles`         | `Vehicle[]`  | no       | Deze parkeervoorziening is uitsluitend voor voertuigen voldoend aan de genoemde beperkingen. | \*      |
-| `numberOfVehicles` | number       | no       | Capaciteit                                                                                   | \*      |
-| {.data}            |
-
-> **Voorbeeld**
-> Etagerek-onder met capaciteit voor 10 huurfietsen `{ numberOfVehicles: 10, type: 'o', vehicles: [ { type: 'f', owner: 'h' } ] }`
->
-> Vak voor 15 deelsnor- of -bromfietsen: `{ numberOfVehicles: 15, type: 'v', vehicles: [ { type: 'sb', owner: 'h' } ] }`
-
-> **Vraag**  
-> Kunnen we opvragen, alle plekken, ongeacht fysiek voorkomen, die bedoeld zijn voor `vehicleType: { type: 'f', owner: 'h' } `
-
-#### `Space.type`
-
-| ID      | spaceType         | ProRail |
+| Enum    | Beschrijving      | ProRail |
 | ------- | ----------------- | ------- |
 | `x`     | geen voorziening  |
 | `r`     | rek               | \*      |
@@ -336,44 +213,223 @@ Dit is voor later voorzien.
 | `a`     | anders            |
 | {.data} |
 
-### `Vehicle`
+### <dfn>`ParkingSpace`
+
+Individuele parkeerplekken zijn voorzien als een toekomstige uitbreiding.
+
+## Tellingen, metingen en capaciteit
+
+Dynamische data zijn de tellingen of metingen van het aantal plekken en/of het aantal geparkeerde voertuigen.
+Dynamische data kan per sectie aangeleverd worden en per parkeerlocatie of per sectie uitgeleverd worden.
+Teldata van de secties van één parkeerlocatie moeten dan wel op hetzelfde moment geüpdatet worden.
+
+<aside class='note' title='Stallingscapaciteit'>
+
+De parkeercapaciteit van een sectie lijkt op het eerste gezicht statisch.
+Toch is deze op advies van telinstanties niet opgenomen in de statische data.
+Wegwerkzaamheden en herindelingen van straten hebben te vaak invloed op de parkeercapaceit van straatsecties.
+In bewaakte stallingen kan het voorkomen dat bepaalde secties gedurende bepaalde periodes gereserveerd zijn.
+
+</aside>
+
+### <dfn>`DynamicParkingFacility`
+
+> Maak onderscheid "Required" afhankelijk van of je instuurt of uitleest.
+
+| Eigenschap                                                           | Type                              | Kardinaliteit | Beschrijving                                                                            | ProRail |
+| -------------------------------------------------------------------- | --------------------------------- | ------------- | --------------------------------------------------------------------------------------- | ------- |
+| <dfn data-dfn-for='DynamicParkingFacility'>parkingFacility           | `string`                          | 1             | {{ParkingFacility.id}} waarop deze telling betrekking heeft.                            |
+| <dfn data-dfn-for='DynamicParkingFacility'>timestamp                 | [[rfc3339]] date-time (`string`)  | 1             | Tijdstip van de meting, zie <a href='#geldigheid-door-de-tijd'></a>.                    |
+| <dfn data-dfn-for='DynamicParkingFacility'>survey                    | `string`                          | conditional   | Survey waartoe deze meting behoort.                                                     |
+| <dfn data-dfn-for='DynamicParkingFacility'>parkingCapacity           | `number`                          | conditional   | Totaal aantal plekken, verplicht als één of meerdere onderdelen dit gemeten hebben.     |
+| <dfn data-dfn-for='DynamicParkingFacility'>vacantSpaces              | `number`                          | conditional   | Aantal vrije plekken.                                                                   |
+| <dfn data-dfn-for='DynamicParkingFacility'>occupiedSpaces            | `number`                          | conditional   | Aantal bezette plekken, verplicht als één of meerdere onderdelen dit gemeten hebben.    |
+| <dfn data-dfn-for='DynamicParkingFacility'>totalParked               | `number`                          | conditional   | Aantal getelde voertuigen, verplicht als één of meerdere onderdelen dit gemeten hebben. |
+| <dfn data-dfn-for='DynamicParkingFacility'>count                     | {{VehicleTypeCount}}`[]`          | 0..N          | Verzameling van tellingen.                                                              |
+| <dfn data-dfn-for='DynamicParkingFacility'>capacityPerParkingSpaceOf | {{CapacityPerParkingSpaceOf}}`[]` | 0..N          | Capaciteit per type parkeervoorziening, over de hele stalling. Sommering bij indienen.  |
+| <dfn data-dfn-for='DynamicParkingFacility'>note                      | {{Note}}                          | 0..1          | Notities over de meting in deze sectie                                                  |
+| {.data def}                                                          |
+
+Parkeercapaciteit wordt dynamisch geregistreerd, zodat kleine veranderingen aan de parkeervoorzieningen niet tot een nieuwe ParkingFacility leidt.
+
+### <dfn>`DynamicSection`
+
+Een telling of meting kan gaan over het aantal parkeerplekken (evt. naar type) en/of
+het aantal geparkeerde voertuigen (evt. naar type) in een sectie.
+
+| Eigenschap                                             | Type                             | Kardinaliteit | Beschrijving                                                                                       | ProRail |
+| ------------------------------------------------------ | -------------------------------- | ------------- | -------------------------------------------------------------------------------------------------- | ------- |
+| <dfn data-dfn-for='DynamicSection'>section             | `string`                         | 1             | {{Section.id}} waarop deze telling betrekking heeft.                                               |
+| <dfn data-dfn-for='DynamicSection'>timestamp           | [[rfc3339]] date-time (`string`) | 1             | Tijdstip van de meting, zie <a href='#geldigheid-door-de-tijd'></a>.                               |
+| <dfn data-dfn-for='DynamicSection'>survey              | `string`                         | 1             | Survey waartoe deze meting behoort.                                                                |
+| <dfn data-dfn-for='DynamicSection'>parkingCapacity     | `number`                         | 0..1          | Totaal aantal plekken, verplicht bij capaciteitstelling.                                           |
+| <dfn data-dfn-for='DynamicSection'>totalParked         | `number`                         | 0..1          | Totaal aantal geparkeerde voertuigen, verplicht bij telling van het aantal geparkeerde voertuigen. |
+| <dfn data-dfn-for='DynamicSection'>parkedByVehicleType | {{VehicleTypeCount}}`[]`         | 0..N          | Telling per geparkeerd voertuigtype                                                                |
+| <dfn data-dfn-for='DynamicSection'>occupiedSpaces      | `number`                         | 0..1          | Aantal bezette plekken, berekend o.b.v. `capacityPerParkingSpaceOf` en `parkedByVehicleType`       |
+| {.data def}                                            |
+
+Hierbij geldt het volgende:
+
+- Bij een capaciteitstelling is het veld {{DynamicSection.parkingCapacity}} VERPLICHT.
+- Bij een telling van het aantal geparkeerde voertuigen is het veld {{DynamicSection.totalParked}} VERPLICHT.
+
+_De rest van deze sectie is niet-normatief._
+
+De velden surveyId, authorityId en contractorId kunnen gebruikt worden bij het filteren van data bij de zoekopdrachten van de API's 4 en 5.
+Je zou bijvoorbeeld kunnen alle metingen van een bepaald onderzoek die zijn uitgevoerd door een bepaalde contractor kunnen opvragen. Zie _API Requests_ voor meer details over zoekopdrachten.
+
+### <dfn>`DynamicPlace`
+
+Dit is voor later voorzien.
+
+### <dfn>`CapacityPerParkingSpaceOf`
+
+| Eigenschap                                                     | Type               | Kardinaliteit | Beschrijving        | ProRail |
+| -------------------------------------------------------------- | ------------------ | ------------- | ------------------- | ------- |
+| <dfn data-dfn-for='CapacityPerParkingSpaceOf'>parkingSpaceOf   | {{ParkingSpaceOf}} | 1             | Type parkeerplaats. | \*      |
+| <dfn data-dfn-for='CapacityPerParkingSpaceOf'>numberOfVehicles | `number`           | 1             | Gemeten capaciteit. | \*      |
+| {.data def}                                                    |
+
+<aside class='example'>
+
+1. Etagerek-onder met capaciteit voor 10 huurfietsen:
+
+   ```json
+   {
+     "numberOfVehicles": 10,
+     "type": "o",
+     "vehicles": [{ "type": "f", "owner": "h" }]
+   }
+   ```
+
+2. Vak voor 15 deelsnor- of -bromfietsen:
+
+   ```json
+   {
+     "numberOfVehicles": 15,
+     "type": "v",
+     "vehicles": [{ "type": "sb", "owner": "h" }]
+   }
+   ```
+
+</aside>
+
+### <dfn>`VehicleTypeCount`
+
+| Eigenschap                                            | Type        | Kardinaliteit | Beschrijving                             | ProRail |
+| ----------------------------------------------------- | ----------- | ------------- | ---------------------------------------- | ------- |
+| <dfn data-dfn-for="VehicleTypeCount">vehicle          | {{Vehicle}} | 1             | Voertuigtype                             | \*      |
+| <dfn data-dfn-for="VehicleTypeCount">parkState        | `string`    | 0..1          | Zie enum {{VehicleParkState}}.           | \*      |
+| <dfn data-dfn-for="VehicleTypeCount">numberOfVehicles | `number`    | 1             | Aantal gestalde voertuigen van dit type. | \*      |
+| {.data def}                                           |
+
+<aside class='example'>
+
+1. 6 particuliere fietsen in het rek:
+
+   ```json
+   {
+     "vehicle": { "type": "f", "owner": "p" },
+     "numberOfVehicles": 6,
+     "parkState": "i"
+   }
+   ```
+
+2. 4 particuliere fietsen buiten het rek:
+
+   ```json
+   {
+     "vehicle": { "type": "f", "owner": "p" },
+     "numberOfVehicles": 4,
+     "parkState": "x"
+   }
+   ```
+
+3. 100 normale fietsen buiten voorziening:
+
+   ```json
+   {
+     "vehicle": { "type": "f" },
+     "numberOfVehicles": 100,
+     "parkState": "x"
+   }
+   ```
+
+</aside>
+
+#### Enum <dfn>`VehicleParkState`
+
+| Enum    | Omschrijving                  | ProRail |
+| ------- | ----------------------------- | ------- |
+| `i`     | In voorziening                |         |
+| `j`     | In voorziening, juist gestald | \*      |
+| `k`     | In voorziening, neemt plek in | \*      |
+| `p`     | nabij voorziening             | \*      |
+| `x`     | buiten voorziening            | \*      |
+| {.data} |
+
+“In voorziening” betekent twee dingen, wat voor bepaalde {{Survey}}s geëxpliciteerd moet worden:
+
+- juist gestald in de voorziening;
+- neemt 1 plek in de voorziening.
+
+### <dfn>`Note`
+
+Het objecttype Note houdt bijzonderheden over de telling bij.
+Zoals of het een feestdag was op moment van telling.
+
+| Eigenschap                                    | Type      | Kardinaliteit | Beschrijving                                         |
+| --------------------------------------------- | --------- | ------------- | ---------------------------------------------------- |
+| <dfn data-dfn-for='Note'>wasClosed            | `boolean` | 0..1          | Was deze voorziening niet geopend tijdens de meting. |
+| <dfn data-dfn-for='Note'>wasHoliday           | `boolean` | 0..1          | Was er een vakantie tijdens de meting.               |
+| <dfn data-dfn-for='Note'>wasEvent             | `boolean` | 0..1          | Was er een evenement of feestdag tijdens de meting.  |
+| <dfn data-dfn-for='Note'>wasUnderConstruction | `boolean` | 0..1          | Waren er werkzaamheden tijdens de meting.            |
+| <dfn data-dfn-for='Note'>remark               | `string`  | 0..1          | Vrij tekstveld.                                      |
+| {.data def}                                   |
+
+## Voertuigen
+
+Met {{Vehicle}} kunnen uitgebreid kenmerken van fietsen, bromfietsen en andere voertuigen worden beschreven.
+Met {{CanonicalVehicle}} worden prototypische voertuigen voor een telling geconcretiseerd.
+
+_De rest van deze sectie is niet-normatief._
+
+{{CanonicalVehicles}} worden gebruikt bij concrete opdrachten met een beperkte tel-resolutie:
+bijvoorbeeld als elk voertuig maar in één van vier categorieën wordt geteld:
+brom-/snorfiets,
+fiets met accessory,
+sterk afwijkend buitenmodelfiets,
+gewone fiets.
+Door bij {{Survey}} te annoteren welke {{CanonicalVehicles}} zijn gebruikt, is te achterhalen welke uitspraken over voertuigtypen gestaafd worden door de data.
+
+### <dfn>`Vehicle`
 
 <div class='issue' data-number="9"></div>
 
-| Field          | Type                                                       | Required | Description                                     | ProRail |
-| -------------- | ---------------------------------------------------------- | -------- | ----------------------------------------------- | ------- |
-| `type`         | string                                                     | no       | Zie tabel Vehicle.type                          | \*      |
-| `propulsion`   | string[]                                                   | no       | Zie tabel Vehicle.propulsion                    |
-| `appearance`   | string                                                     | no       | Zie tabel Vehicle.appearance                    | \*      |
-| `state`        | VehicleState[]                                             | no       | Zie tabel VehicleState                          |
-| `accessoires`  | Accessoire[]                                               | no       | Zie tabel Accessoire                            | \*      |
-| `owner`        | string                                                     | no       | Zie tabel Vehicle.owner                         | \*      |
-| `wasCanonical` | `CanonicalVehicle.canonicalIdentifier` (string) of boolean | no       | Vertaald uit een survey-specifiek voertuigtype. |
-| {.data}        |
+| Eigenschappen                           | Type              | Kardinaliteit | Beschrijving                       | ProRail |
+| --------------------------------------- | ----------------- | ------------- | ---------------------------------- | ------- |
+| <dfn data-dfn-for='Vehicle'>type        | `string`          | 0..1          | Zie enum {{VehicleType}}           | \*      |
+| <dfn data-dfn-for='Vehicle'>propulsion  | `string[]`        | 0..N          | Zie enum {{VehiclePropulsionType}} |
+| <dfn data-dfn-for='Vehicle'>appearance  | `string`          | 0..1          | Zie enum {{VehicleAppearanceType}} | \*      |
+| <dfn data-dfn-for='Vehicle'>state       | `string[]`        | 0..N          | Zie enum {{VehicleStateType}}      |
+| <dfn data-dfn-for='Vehicle'>accessories | {{Accessory}}`[]` | 0..N          | Zie tabel {{Accessory}}            | \*      |
+| <dfn data-dfn-for='Vehicle'>owner       | `string`          | 0..1          | Zie enum {{VehicleOwnerType}}      | \*      |
+| {.data def}                             |
 
-> TODO:
-> Indien `wasCanonical = true`: afwezigheid van een onderdeel, betekent niet de afwezigheid van wat het specificeert.
-> Indien `wasCanonical = false`: ...
-
-#### `CanonicalVehicle`
+### <dfn>`CanonicalVehicle`
 
 Alternatief voor expliciete voertuigtyperingen.
 
-| Field                 | Type      | Required | Description                                        | ProRail |
-| --------------------- | --------- | -------- | -------------------------------------------------- | ------- |
-| `canonicalIdentifier` | string    | yes      | Geregistreerd voertuigtype voor metingsdoeleinden. |
-| `label`               | string    | no       | Leesbare naam van voertuigtype                     |         |
-| `vehicle`             | Vehicle[] | yes      | Zie tabel Vehicle                                  |
-| {.data}               |
+| Eigenschappen                                | Type            | Kardinaliteit | Beschrijving                   | ProRail |
+| -------------------------------------------- | --------------- | ------------- | ------------------------------ | ------- |
+| <dfn data-dfn-for='CanonicalVehicle'>label   | `string`        | 0..1          | Leesbare naam van voertuigtype |         |
+| <dfn data-dfn-for='CanonicalVehicle'>vehicle | {{Vehicle}}`[]` | 1..N          | Zie tabel {{Vehicle}}          |
+| {.data def}                                  |
 
-Dan kun je op plekken waar `Vehicle` object wordt verwacht, óók een `CanonicalVehicle.canonicalIdentifier` string hebben.
-
-> TODO: Nog koppelen aan een Survey
-
-<aside class="example" title="Canonieke voertuigen">
+<aside class="example" title="ProRail: Canonieke voertuigen">
 
 Eigenschappen die niet vermeld worden bij canonieke voertuigen, zijn niet bepalend geweest voor de categorie-indeling.
-Dat betekent dus dat bij bijv. onderstaande _Normfiets_, het best een elektrische trapondersteuning (`propulsion = "s"`) of een fietstas (`accessoire.type = "t"`) kan hebben.
+Dat betekent dus dat bij bijv. onderstaande _Normfiets_, het best een elektrische trapondersteuning (`propulsion = "s"`) of een fietstas (`accessory.type = "t"`) kan hebben.
 Het was alleen niet een kenmerkend onderscheid binnen de telling waarin de canonieke voertuigen worden onderkend.
 
 ```json
@@ -397,13 +453,13 @@ Het was alleen niet een kenmerkend onderscheid binnen de telling waarin de canon
     {
       // kratje voor
       "type": "f",
-      "accessoires": [{ "type": "k", "position": "v" }],
+      "accessories": [{ "type": "k", "position": "v" }],
       "owner": "p"
     },
     {
       // kinderzitje achter
       "type": "f",
-      "accessoires": [{ "type": "z", "position": "a" }],
+      "accessories": [{ "type": "z", "position": "a" }],
       "owner": "p"
     }
   ]
@@ -438,17 +494,17 @@ Het was alleen niet een kenmerkend onderscheid binnen de telling waarin de canon
 
 </aside>
 
-#### `Accessoire`
+### <dfn>`Accessory`
 
-| Field      | Type   | Required | Description                            | ProRail |
-| ---------- | ------ | -------- | -------------------------------------- | ------- |
-| `type`     | string | no       | Zie tabel Vehicle.accessoire.typen     | \*      |
-| `position` | string | no       | Zie tabel Vehicle.accessoire.positions |
-| {.data}    |
+| Eigenschappen                          | Type     | Kardinaliteit | Beschrijving                   | ProRail |
+| -------------------------------------- | -------- | ------------- | ------------------------------ | ------- |
+| <dfn data-dfn-for='Accessory'>type     | `string` | 0..1          | Zie enum {{AccessoryType}}     | \*      |
+| <dfn data-dfn-for='Accessory'>position | `string` | 0..1          | Zie enum {{AttributePosition}} |
+| {.data def}                            |
 
-##### `Vehicle.accessoire.typen`
+#### Enum <dfn>`AccessoryType`
 
-| ID      | Omschrijving               | ProRail |
+| Enum    | Omschrijving               | ProRail |
 | ------- | -------------------------- | ------- |
 | `z`     | kinderzitje                |
 | `t`     | fietstas                   |
@@ -457,25 +513,25 @@ Het was alleen niet een kenmerkend onderscheid binnen de telling waarin de canon
 | `p`     | Beperkt afwijkend, nl. k,z | \*      |
 | {.data} |
 
-##### `Vehicle.accessoire.positions`
+#### Enum <dfn>`AttributePosition`
 
-| ID      | Omschrijving |
+| Enum    | Omschrijving |
 | ------- | ------------ |
 | `v`     | voor         |
 | `a`     | achter       |
 | {.data} |
 
-#### `VehicleState`
+### <dfn>`VehicleState`
 
-| Field      | Type   | Required | Description                      |
-| ---------- | ------ | -------- | -------------------------------- |
-| `type`     | string | no       | Zie tabel Vehicle.state.type     |
-| `position` | string | no       | Zie tabel Vehicle.state.position |
-| {.data}    |
+| Eigenschap  | Type     | Kardinaliteit | Beschrijving                   |
+| ----------- | -------- | ------------- | ------------------------------ |
+| `type`      | `string` | 0..1          | Zie enum {{VehicleStateType}}  |
+| `position`  | `string` | 0..1          | Zie enum {{AttributePosition}} |
+| {.data def} |
 
-##### `Vehicle.state.type`
+##### Enum <dfn>`VehicleStateType`
 
-| ID      | Omschrijving |
+| Enum    | Omschrijving |
 | ------- | ------------ |
 | `w`     | wrak         |
 | `l`     | lekke band   |
@@ -483,48 +539,24 @@ Het was alleen niet een kenmerkend onderscheid binnen de telling waarin de canon
 | ...     | ...          |
 | {.data} |
 
-##### `Vehicle.state.position`
-
-| ID      | Omschrijving |
-| ------- | ------------ |
-| `v`     | voor         |
-| `a`     | achter       |
-| {.data} |
-
-#### `Vehicle.parkState`
-
-| ID      | Omschrijving                  | ProRail |
-| ------- | ----------------------------- | ------- |
-| `i`     | In voorziening                |         |
-| `j`     | In voorziening, juist gestald | \*      |
-| `k`     | In voorziening, neemt plek in | \*      |
-| `p`     | nabij voorziening             | \*      |
-| `x`     | buiten voorziening            | \*      |
-| {.data} |
-
-“In voorziening” betekent twee dingen, wat voor een bepaalde Survey geëxpliciteerd moet worden:
-
-- juist gestald in de voorziening;
-- neemt 1 plek in de voorziening.
-
-#### `Vehicle.type`
+#### Enum <dfn>`VehicleType`
 
 Classificatie naar wettelijke voertuigcategorie.
 
-| ID      | Voertuigtype          | Omschrijving                                                                | ProRail                    |
-| ------- | --------------------- | --------------------------------------------------------------------------- | -------------------------- |
-| `f`     | fiets                 | Geen kenteken en geen verzekeringsplaatje                                   | \*                         |
-| `s`     | snorfiets             | kentekenplaat is blauw, met een wit kader, wit opschrift en een hologram    | \*                         |
-| `b`     | bromfiets             | kentekenplaat is geel, met een zwart kader, zwart opschrift en een hologram | \*                         |
-| `sb`    | snor- of bromfiets    | kentekenplaat is geel of blauw, onderscheid wordt niet gemaakt.             | \*                         |
+| Enum    | Voertuigtype          | Omschrijving                                                                | ProRail |
+| ------- | --------------------- | --------------------------------------------------------------------------- | ------- |
+| `f`     | fiets                 | Geen kenteken en geen verzekeringsplaatje                                   | \*      |
+| `s`     | snorfiets             | kentekenplaat is blauw, met een wit kader, wit opschrift en een hologram    | \*      |
+| `b`     | bromfiets             | kentekenplaat is geel, met een zwart kader, zwart opschrift en een hologram | \*      |
+| `s b`   | snor- of bromfiets    | kentekenplaat is geel of blauw, onderscheid wordt niet gemaakt.             | \*      |
 | `m`     | motorfiets            | NL geel, internationaal anders                                              |
-| `g`     | gehandicaptenvoertuig | driewieler, scootmobiel, rolstoel, etc                                      | (zie `Vehicle.appearance`) |
+| `g`     | gehandicaptenvoertuig | driewieler, scootmobiel, rolstoel, etc                                      |
 | `a`     | anders                |                                                                             |
 | {.data} |
 
-#### `Vehicle.propulsion`
+#### Enum <dfn>`VehiclePropulsionType`
 
-| ID      | Aandrijving            | Omschrijving                          |
+| Enum    | Aandrijving            | Omschrijving                          |
 | ------- | ---------------------- | ------------------------------------- |
 | `s`     | Spierkracht            | bv traditionele fiets of voetganger   |
 | `e`     | Elektrisch             | bv e-bike                             |
@@ -532,60 +564,33 @@ Classificatie naar wettelijke voertuigcategorie.
 | `b`     | Verbrandingsmotor      | bv traditionele bromfiets, motorfiets |
 | {.data} |
 
-#### `Vehicle.appearance`
+#### Enum <dfn>`VehicleAppearanceType`
 
-| ID      | Hex?              | Verschijningsvorm              | ProRail |
-| ------- | ----------------- | ------------------------------ | ------- |
-| `k`     | 0x1               | Kinderfiets                    |
-| `r`     | 0x2               | Racefiets                      |
-| `l`     | 0x4               | Ligfiets                       |
-| `b`     | 0x8               | Bakfiets / Transportfiets      |
-| `f`     | 0x10              | Fietskar                       |
-| `v`     | 0x20              | Vouwfiets                      |
-| `m`     | 0x40              | Mountainbike                   |
-| `d`     | 0x80              | Driewieler                     |
-| `t`     | 0x100             | Tandem                         |
-| `g`     | 0x200             | Gehandicaptenvoertuig          |
-| `x`     | 0x398 = (dec) 920 | Sterk afwijkend: nl. b,f,d,t,g | \*      |
+| Enum    | Verschijningsvorm              | ProRail |
+| ------- | ------------------------------ | ------- |
+| `k`     | Kinderfiets                    |
+| `r`     | Racefiets                      |
+| `l`     | Ligfiets                       |
+| `b`     | Bakfiets / Transportfiets      |
+| `f`     | Fietskar                       |
+| `v`     | Vouwfiets                      |
+| `m`     | Mountainbike                   |
+| `d`     | Driewieler                     |
+| `t`     | Tandem                         |
+| `g`     | Gehandicaptenvoertuig          |
+| `x`     | Sterk afwijkend: nl. b,f,d,t,g | \*      |
 | {.data} |
 
 <aside class='issue' data-number='10'></aside>
 
-#### `Vehicle.owner`
+#### Enum <dfn>`VehicleOwnerType`
 
-| ID      | Eigenaar | Omschrijving                 | ProRail |
-| ------- | -------- | ---------------------------- | ------- |
-| `p`     | Privé    | Privéfiets                   | (std.)  |
-| `l`     | Lease    | Leasefiets, zoals Swap Bikes |
-| `h`     | Huur     | Huurfiets, zoals OV-fiets    | \*      |
+| Enum    | Eigenaar | Omschrijving                | ProRail |
+| ------- | -------- | --------------------------- | ------- |
+| `p`     | Privé    | Privéfiets                  | (std.)  |
+| `l`     | Lease    | Leasefiets, zoals Swapfiets |
+| `h`     | Huur     | Huurfiets, zoals OV-fiets   | \*      |
 | {.data} |
-
-### `VehicleTypeCount`
-
-| Field              | Type    | Required | Description                              | ProRail |
-| ------------------ | ------- | -------- | ---------------------------------------- | ------- |
-| `vehicle`          | Vehicle | yes      | Voertuigtype                             | \*      |
-| `parkState`        | string  | no       | Zie tabel Vehicle.parkState              | \*      |
-| `numberOfVehicles` | number  | yes      | Aantal gestalde voertuigen van dit type. | \*      |
-| {.data}            |
-
-> **Voorbeeld**:
-> 6 particuliere fietsen in het rek: `{ vehicle: {type: 'f', owner: 'p'}, numberOfVehicles: 6, parkState: 'i'}`;
->
-> 4 particuliere fietsen buiten het rek: `{ vehicle: {type: 'f', owner: 'p'}, numberOfVehicles: 4, parkState: 'x'}`;
->
-> 100 normale fietsen buiten voorziening: `{ vehicle: { type: 'f' }, numberOfVehicles: 100, parkState: 'x' }`;
-
-### `Note`
-
-| Field                 | Type    | Required | Description                               |
-| --------------------- | ------- | -------- | ----------------------------------------- |
-| `isOpen`              | boolean | no       | is deze area, bijv. een stalling geopend? |
-| `isHoliday`           | boolean | no       | Vakantie?                                 |
-| `isEvent`             | boolean | no       | Evenement (markt, kermis, ...)?           |
-| `isUnderConstruction` | boolean | no       | Werkzaamheden?                            |
-| `remark`              | string  | no       | Vrij tekstveld                            |
-| {.data}               |
 
 <aside class='example' title="ProRail">
 
@@ -595,8 +600,8 @@ De gewenste voorzieningtypes voor ProRail:
 - Etagerek = `{ type: 'e', vehicle: [{ owner: 'p', type: 'f' }] }`
 - Vak = `{ type: 'v', vehicles: [{ type: 'sb'}, { appearance: 'x' }] }` (snor-, brom- en sterk afwijkend model fiets)
 - Kluis = `{ type: 'k', vehicles: [{ type: 'f' }]}`
-- Buitenmodel (beperkt afwijkend)-rek = `{ type: 'r', vehicles: [{ type: 'f', accessoire: [{type: 'p'}] }] }`
-- Buitenmodel (beperkt afwijkend)-rek etage = `{ type: 'o', vehicles: [{ type: 'f', accessoire: [{type: 'p'}] }] }`
+- Buitenmodel (beperkt afwijkend)-rek = `{ type: 'r', vehicles: [{ type: 'f', accessory: [{type: 'p'}] }] }`
+- Buitenmodel (beperkt afwijkend)-rek etage = `{ type: 'o', vehicles: [{ type: 'f', accessory: [{type: 'p'}] }] }`
 - Deelfiets-rek = `{ type: 'r', vehicle: [{ type: 'f', owner: 'h' }] }`
 - Deelfiets-vak = `{ type: 'v', vehicle: [{ type: 'f', owner: 'h' }] }`
 
@@ -605,18 +610,18 @@ De gewenste fietstypes voor ProRail:
 - **Normfiets**
   - Fiets = `{ type: 'f', owner: 'p' }`
 - **Beperkt afwijkend**
-  - Fiets met kratje voor = `{ type: 'f', owner: 'p', accessoires: [ { type: 'k', position: 'v' } ]}`
-  - Fiets met kinderzitje achter = `{ type: 'f', owner: 'p', accessoires: [ { type: 'z', position: 'a' } ]}`
+  - Fiets met kratje voor = `{ type: 'f', owner: 'p', accessories: [ { type: 'k', position: 'v' } ]}`
+  - Fiets met kinderzitje achter = `{ type: 'f', owner: 'p', accessories: [ { type: 'z', position: 'a' } ]}`
 - Geel kenteken = `{ type: 'b', owner: 'p' }`
 - Blauw kenteken = `{ type: 's', owner: 'p' }` (Is dat te onderscheiden tov huur?)
 - Deelfiets = `{ type: 'f', owner: 'h' }`
 - Deelscooter = `{ type: 'sb', owner: 'h' }`
 - Bakfiets = `{ type: 'f', appearance: 'x' }`
-- Buitenmodelfiets = `{ type: 'f', accessoire: [{ type: 'p' }] }`
+- Buitenmodelfiets = `{ type: 'f', accessory: [{ type: 'p' }] }`
 - Vierwieler = `{ type: 'f', appearance: 'x' }` (???)
 - Overig = `{ type: 'a' }`
 
-Is afwezigheid v/h kenmerk 'accessoire' afwezigheid v/e accessoire?
+Is afwezigheid v/h kenmerk 'accessory' afwezigheid v/e accessory?
 Of alleen voor fietsen (`{ type: 'f' }`)?
 Moet je uitsluiten bij een _telling_ dat het privéfietsen zijn, en/of moet dat ook bij een capaciteitsmeting.
 
