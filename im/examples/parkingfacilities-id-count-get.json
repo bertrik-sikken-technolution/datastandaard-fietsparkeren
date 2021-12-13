@@ -1,0 +1,12 @@
+{
+	"timestamp": "2021-11-23T12:00:00Z",
+	"survey": "roosendaal-stationsgebied",
+	"parkingCapacity":	100,
+	"vacantSpaces":	10,
+	"occupiedSpaces": 90,
+	"totalParked": 90,
+	"count": [{...},{...}],
+	"capacityPerParkingSpaceOf": [{...}, {...}],
+	"note": {...}
+
+}

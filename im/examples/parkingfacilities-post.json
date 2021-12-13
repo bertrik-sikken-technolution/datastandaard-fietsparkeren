@@ -1,0 +1,11 @@
+{
+  "id": "roosendaal-stationsstraat",
+  "name": "Roosendaal-Stationsstraat",
+  "geoLocation": {...},
+  "validFrom": "2021-01-01T00:00:00Z",
+  "validThrough":	"2022-01-01T00:00:00Z",
+  "altLabel":	"Stationsstraat",
+  "securityFeature":	[{SecurityFeature},{SecurityFeature}],
+  "allowedVehicles": [{Vehicle},{Vehicle}],
+  "authority": "prorail"
+}
