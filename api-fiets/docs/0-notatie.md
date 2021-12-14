@@ -13,7 +13,7 @@ Waar de waarde een `string` is, uit een beperkte enumeratielijst, worden meerder
 Waar in een URL een `{var}` voorkomt, staat dat deel voor een variabele die ingevuld moet worden.
 Als meerdere variabelen dezelfde naam hebben, wordt er met een indexgetal naar de variabele met dat volgnummer verwezen.
 
-<figure>
+<!-- <figure>
 <figcaption>Gebruikte namespaces in dit document</figcaption>
 
 | Prefix    | Namespace                                           |
@@ -23,6 +23,6 @@ Als meerdere variabelen dezelfde naam hebben, wordt er met een indexgetal naar d
 | `vp:`     | `https://data.velopark.be/openvelopark/vocabulary#` |
 | `vpt:`    | `https://data.velopark.be/openvelopark/terms#`      |
 
-</figure>
+</figure> -->
 
 [typescript]: https://www.typescriptlang.org/

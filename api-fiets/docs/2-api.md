@@ -48,6 +48,8 @@ In het geval van de pilot in VeiligStallen is de base-url `https://remote.veilig
 
 </aside>
 
+<section class='informative'>
+
 ### Relaties tussen objecttypen
 
 Onderstaande <a href='#relatie-objecttypen'></a> verduidelijkt de koppelingen die er bestaan tussen de verschillende objecttypen.
@@ -167,15 +169,15 @@ Als bijvoorbeelde contractor met id `de_fietstellers_bv` dynamische data instuur
 
 ## Responses
 
-### <dfn>`ResultWrapper`</dfn>
+### <dfn>`ResultWrapper`</dfn>`<T>`
 
 Endpoints met meerdere resultaten MOETEN de [[=Response=]] in een `ResultWrapper` gestoken zijn.
 Implementaties MOGEN metadata over de resultaten meegeven aan de `ResultWrapper`, zoals paginering, gebruikte filters, etc.
 Endpoints met expliciet één resultaat MOGEN NIET via een `ResultWrapper` uitgeleverd worden.
 
-| Eigenschap                               | Type | Kardinaliteit | Beschrijving           |
-| ---------------------------------------- | ---- | ------------- | ---------------------- |
-| <dfn data-dfn-for="ResultWrapper">result | `[]` | 1..N          | Verzameling van items. |
+| Eigenschap                               | Type  | Kardinaliteit | Beschrijving                    |
+| ---------------------------------------- | ----- | ------------- | ------------------------------- |
+| <dfn data-dfn-for="ResultWrapper">result | `T[]` | 1..N          | Verzameling van één type items. |
 | {.data def}                              |
 
 _De rest van deze sectie is niet normatief._
@@ -234,7 +236,7 @@ Voor queryparameters geldt in het algemeen:
 - Een implementatie MAG extra queryparameters ondersteunen.
 - Een implementatie MOET onbekende queryparameters accepteren.
 - Een implementatie MOET de response waarbij onbekende queryparameters niet zijn verwerkt, accepteren.
-- Een implementatie MOET queryparameter-namen hoofdletterongevoelig parseren, dus {{authority}}`=abc` is hetzelfde als {{AuthoriTY}}`=abc`.
+- Een implementatie MOET queryparameter-namen hoofdletterongevoelig parseren, dus {{authorityid}}`=abc` is hetzelfde als {{AuthorityID}}`=abc`.
 - Een implementatie MAG queryparameters combineren voor een specifiekere filtering.
 
 <aside class='issue'>
@@ -322,8 +324,6 @@ Een implementatie MOET kunnen filteren op {{authorityID}}, {{contractorID}} en {
 | <dfn>authorityID  | `string` | Alleen data van de opdrachtgever met deze {{Organisation.id}}. |
 | <dfn>contractorID | `string` | Alleen data van de aannemer met deze {{Organisation.id}}.      |
 | {.data def}       |
-
-<section class='informative'>
 
 ## REST-API: organisaties
 
