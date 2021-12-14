@@ -237,6 +237,11 @@ Voor queryparameters geldt in het algemeen:
 - Een implementatie MOET queryparameter-namen hoofdletterongevoelig parseren, dus {{authority}}`=abc` is hetzelfde als {{AuthoriTY}}`=abc`.
 - Een implementatie MAG queryparameters combineren voor een specifiekere filtering.
 
+<aside class='issue'>
+Het is zeer verboos en niet per se duidelijk om bij elk GET-endpoint aan te geven welke filters mogelijk zijn.
+Misschien beter om algemene filters (<a href='#sortering-en-paginering'></a>) altijd van toepassing verklaren?
+</aside>
+
 #### Tijdsspanne
 
 Deze queryparameters filteren de gegevenslijst op gegevens geregistreerd of geldig binnen een bepaalde tijdspanne.
@@ -316,7 +321,7 @@ Een implementatie MOET kunnen filteren op {{authorityID}}, {{contractorID}} en {
 | <dfn>surveyID     | `string` | Alleen data van een onderzoek met deze {{Survey.id}}.          |
 | <dfn>authorityID  | `string` | Alleen data van de opdrachtgever met deze {{Organisation.id}}. |
 | <dfn>contractorID | `string` | Alleen data van de aannemer met deze {{Organisation.id}}.      |
-| { .data def}      |
+| {.data def}       |
 
 <section class='informative'>
 
@@ -332,11 +337,20 @@ De volgende endpoints representeren de {{Organisation}}s die partij zijn bij een
 | <dfn>PUT `/organisations/{id}` | `Partial<`{{Organisation}}`>`           | Update de organisatie waar {{Organisation.id}} = <var>id</var>. |
 | {.data def }                   |
 
+GET ondersteunt filters:
+
+<ul class='filter-list' data-sort>
+<li>{{orderBy}}
+<li>{{orderDirection}}
+<li>{{limit}}
+<li>{{offset}}
+</ul>
+
 <pre class='example json' title='POST /organisations' data-include='examples/organisations-post.json' data-include-format='text'></pre>
 
 ## REST-API: onderzoeken en inwinningen
 
-Registreer en beheer Surveys en SurveyAreass en leg de koppeling tussen beide.
+Registreer en beheer Surveys en SurveyAreas en leg de koppeling tussen beide.
 
 | HTTP-methode             | Type                              | Beschrijving                                         |
 | ------------------------ | --------------------------------- | ---------------------------------------------------- |
@@ -346,12 +360,44 @@ Registreer en beheer Surveys en SurveyAreass en leg de koppeling tussen beide.
 | <dfn>PUT `/surveys/{id}` | `Partial<`{{Survey}}`>`           | Update de Survey waar {{Survey.id}} = <var>id</var>. |
 | {.data def}              |
 
+**Standaardfilters voor <a href='#dfn-get-surveys'>GET `/surveys`</a>**
+
+<ul class='filter-list' data-sort>
+<li>{{orderBy}}
+<li>{{orderDirection}}
+<li>{{limit}}
+<li>{{offset}}
+<li>{{geoPolygon}}
+<li>{{geoRelation}}
+<li>{{surveyID}}
+<li>{{authorityID}}
+<li>{{contractorID}}
+<li>{{startDate}}
+<li>{{endDate}}
+</ul>
+
 | HTTP-methode                        | Type                                  | Beschrijving                                                                                                |
 | ----------------------------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | <dfn>GET `/surveys/{id}/areas`      | {{ResultWrapper}}`<`{{SurveyArea}}`>` | Toon SurveysAreas die voorkomen bij {{Survey.surveyArea}} bij de Survey waar {{Survey.id}} = <var>id</var>. |
 | <dfn>POST `/surveys/{id}/areas`     | {{SurveyArea}}                        | Voeg een SurveyArea toe aan een Survey waar {{Survey.id}} = <var>id</var>.                                  |
 | <dfn>PUT `/surveys/{id}/areas/{id}` | `Partial<`{{SurveyArea}}`>`           | Update de SurveyArea waar {{SurveyArea.id}} = <var>id₂</var>.                                               |
 | {.data def }                        |
+
+**Standaardfilters voor <a href='#dfn-get-surveys-id-areas'>GET `/surveys/{id}/areas`</a>**
+
+<ul class='filter-list' data-sort>
+<li>{{orderBy}}
+<li>{{orderDirection}}
+<li>{{limit}}
+<li>{{offset}}
+<li>{{geoPolygon}}
+<li>{{geoRelation}}
+<li>{{surveyID}}
+<li>{{authorityID}}
+<li>{{contractorID}}
+<li>{{startDate}}
+<li>{{endDate}}
+</ul>
 
 <pre class='example json' title='POST /surveys' data-include='examples/surveys-post.json' data-include-format='text'></pre>
 <pre class='example json' title='PUT /surveys' data-include='examples/surveys-id-put.json' data-include-format='text'></pre>

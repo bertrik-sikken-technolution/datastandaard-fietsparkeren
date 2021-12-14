@@ -182,8 +182,6 @@ als bijvoorbeeld een rek vervangen wordt door een buitenmodelvak.
 De eigenaar van de sectie (`authority`) is verantwoordelijk hiervoor.
 Bij handmatige tellingen is het goed denkbaar dat een veldwerker een extra sectie aanmaakt, die vervolgens goedgekeurd moet worden door de eigenaar.
 
-<div class='issue' data-number="4"></div>
-
 ### <dfn>`ParkingSpaceOf`
 
 Omdat niet individuele parkeerplekken gemodelleerd worden, representeert ParkingSpaceOf een homogene groep parkeerplekken.
@@ -589,8 +587,6 @@ Classificatie naar wettelijke voertuigcategorie.
 | `g`     | Gehandicaptenvoertuig          |
 | `x`     | Sterk afwijkend: nl. b,f,d,t,g | \*      |
 | {.data} |
-
-<aside class='issue' data-number='10'></aside>
 
 #### Enum <dfn>`VehicleOwnerType`
 
