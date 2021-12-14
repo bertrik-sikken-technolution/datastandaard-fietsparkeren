@@ -1,1 +1,0 @@
-Dit document beschrijft het informatiemodel en een REST-API om gegevens over geautomatiseerde tellingen in bewaakte stallingen als straattellingen in een gemeenschappelijk gegevensmodel te kunnen opslaan.

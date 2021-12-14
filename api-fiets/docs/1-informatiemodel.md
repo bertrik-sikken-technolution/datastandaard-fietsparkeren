@@ -13,7 +13,7 @@ Het omvat definities, gebruik en API’s voor:
 <figcaption>Overzicht relaties tussen statische en dynamische gegevenselementen</figcaption>
 </figure>
 
-## Tellingen en inwinningen
+## Onderzoeken en inwinningen
 
 Een {{Survey}} groepeert een bron: het representeert een onderzoek of inwinning, incidenteel of doorlopend, in opdracht van een bepaalde {{Organisation}}.
 Daarbij MOGEN één of meerdere onderzoeksgebieden, {{SurveyAreas}}, worden meegegeven: een geografische afbakening van een gebied, dat voor bepaalde rapportages of inzichten nuttig is.
@@ -22,7 +22,7 @@ Daarvoor worden dan overlappende {{ParkingFacilities}} meegenomen: een SurveyAre
 Een implementatie MAG de inzender ‘eigenaar’ laten worden van een Survey:
 dat houdt in dat andere inzenders NIET gegevens aan dat Survey MOGEN koppelen.
 
-_De rest van deze sectie is niet-normatief._
+_De rest van deze sectie is niet normatief._
 
 Gegevens over het onderzoek —
 geïnitieerd door wie?
@@ -232,51 +232,60 @@ In bewaakte stallingen kan het voorkomen dat bepaalde secties gedurende bepaalde
 
 </aside>
 
+<aside class='issue'>
+
+De naamgeving van de DynamicX-elementen kan anders, aangezien de oppositie dynamisch-statisch elders niet meer voorkomt.
+Tegelijk is het verschil tussen `DynamicParkingFacility`, `DynamicSection` minimaal.
+Volstaat wellicht een algemeen `Measurement`?
+
+</aside>
+
 ### <dfn>`DynamicParkingFacility`
 
-> Maak onderscheid "Required" afhankelijk van of je instuurt of uitleest.
+Deze telling of meting registreert het aantal geparkeerde voertuigen en/of de capaciteit daarvoor.
+In onderstaande tabel staat Kard.<sub>capaciteit</sub> voor de kardinaliteit van de eigenschappen van een capaciteitstelling;
+Kard.<sub>telling</sub> staat voor de kardinaliteit van de eigenschappen bij een telling van geparkeerde voertuigen.
 
-| Eigenschap                                                           | Type                              | Kardinaliteit | Beschrijving                                                                            | ProRail |
-| -------------------------------------------------------------------- | --------------------------------- | ------------- | --------------------------------------------------------------------------------------- | ------- |
-| <dfn data-dfn-for='DynamicParkingFacility'>parkingFacility           | `string`                          | 1             | {{ParkingFacility.id}} waarop deze telling betrekking heeft.                            |
-| <dfn data-dfn-for='DynamicParkingFacility'>timestamp                 | [[rfc3339]] date-time (`string`)  | 1             | Tijdstip van de meting, zie <a href='#geldigheid-door-de-tijd'></a>.                    |
-| <dfn data-dfn-for='DynamicParkingFacility'>survey                    | `string`                          | conditional   | Survey waartoe deze meting behoort.                                                     |
-| <dfn data-dfn-for='DynamicParkingFacility'>parkingCapacity           | `number`                          | conditional   | Totaal aantal plekken, verplicht als één of meerdere onderdelen dit gemeten hebben.     |
-| <dfn data-dfn-for='DynamicParkingFacility'>vacantSpaces              | `number`                          | conditional   | Aantal vrije plekken.                                                                   |
-| <dfn data-dfn-for='DynamicParkingFacility'>occupiedSpaces            | `number`                          | conditional   | Aantal bezette plekken, verplicht als één of meerdere onderdelen dit gemeten hebben.    |
-| <dfn data-dfn-for='DynamicParkingFacility'>totalParked               | `number`                          | conditional   | Aantal getelde voertuigen, verplicht als één of meerdere onderdelen dit gemeten hebben. |
-| <dfn data-dfn-for='DynamicParkingFacility'>count                     | {{VehicleTypeCount}}`[]`          | 0..N          | Verzameling van tellingen.                                                              |
-| <dfn data-dfn-for='DynamicParkingFacility'>capacityPerParkingSpaceOf | {{CapacityPerParkingSpaceOf}}`[]` | 0..N          | Capaciteit per type parkeervoorziening, over de hele stalling. Sommering bij indienen.  |
-| <dfn data-dfn-for='DynamicParkingFacility'>note                      | {{Note}}                          | 0..1          | Notities over de meting in deze sectie                                                  |
+| Eigenschap                                                           | Type                              | Kard.<sub>telling</sub> | Kard.<sub>capaciteit</sub> | Beschrijving                                                                            |
+| -------------------------------------------------------------------- | --------------------------------- | ----------------------- | -------------------------- | --------------------------------------------------------------------------------------- |
+| <dfn data-dfn-for='DynamicParkingFacility'>parkingFacility           | `string`                          | 1                       | 1                          | {{ParkingFacility.id}} waarop deze telling betrekking heeft.                            |
+| <dfn data-dfn-for='DynamicParkingFacility'>timestamp                 | [[rfc3339]] date-time (`string`)  | 1                       | 1                          | Tijdstip van de meting, zie <a href='#geldigheid-door-de-tijd'></a>.                    |
+| <dfn data-dfn-for='DynamicParkingFacility'>survey                    | `string`                          | 1                       | 1                          | {{Survey.id}} waartoe deze meting behoort.                                              |
+| <dfn data-dfn-for='DynamicParkingFacility'>parkingCapacity           | `number`                          | optioneel               | 1                          | Totaal aantal plekken, verplicht als één of meerdere onderdelen dit gemeten hebben.     |
+| <dfn data-dfn-for='DynamicParkingFacility'>vacantSpaces              | `number`                          | 1                       | 0                          | Aantal vrije plekken.                                                                   |
+| <dfn data-dfn-for='DynamicParkingFacility'>occupiedSpaces            | `number`                          | 1                       | 0                          | Aantal bezette plekken, verplicht als één of meerdere onderdelen dit gemeten hebben.    |
+| <dfn data-dfn-for='DynamicParkingFacility'>totalParked               | `number`                          | 1                       | 0                          | Aantal getelde voertuigen, verplicht als één of meerdere onderdelen dit gemeten hebben. |
+| <dfn data-dfn-for='DynamicParkingFacility'>count                     | {{VehicleTypeCount}}`[]`          | 1..N                    | 0                          | Verzameling van tellingen.                                                              |
+| <dfn data-dfn-for='DynamicParkingFacility'>capacityPerParkingSpaceOf | {{CapacityPerParkingSpaceOf}}`[]` | optioneel               | 1..N                       | Capaciteit per type parkeervoorziening, over de hele stalling. Sommering bij indienen.  |
+| <dfn data-dfn-for='DynamicParkingFacility'>note                      | {{Note}}                          | 0..1                    | 0..1                       | Notities over de meting in deze sectie                                                  |
 | {.data def}                                                          |
-
-Parkeercapaciteit wordt dynamisch geregistreerd, zodat kleine veranderingen aan de parkeervoorzieningen niet tot een nieuwe ParkingFacility leidt.
 
 ### <dfn>`DynamicSection`
 
 Een telling of meting kan gaan over het aantal parkeerplekken (evt. naar type) en/of
 het aantal geparkeerde voertuigen (evt. naar type) in een sectie.
 
-| Eigenschap                                             | Type                             | Kardinaliteit | Beschrijving                                                                                       | ProRail |
-| ------------------------------------------------------ | -------------------------------- | ------------- | -------------------------------------------------------------------------------------------------- | ------- |
-| <dfn data-dfn-for='DynamicSection'>section             | `string`                         | 1             | {{Section.id}} waarop deze telling betrekking heeft.                                               |
-| <dfn data-dfn-for='DynamicSection'>timestamp           | [[rfc3339]] date-time (`string`) | 1             | Tijdstip van de meting, zie <a href='#geldigheid-door-de-tijd'></a>.                               |
-| <dfn data-dfn-for='DynamicSection'>survey              | `string`                         | 1             | Survey waartoe deze meting behoort.                                                                |
-| <dfn data-dfn-for='DynamicSection'>parkingCapacity     | `number`                         | 0..1          | Totaal aantal plekken, verplicht bij capaciteitstelling.                                           |
-| <dfn data-dfn-for='DynamicSection'>totalParked         | `number`                         | 0..1          | Totaal aantal geparkeerde voertuigen, verplicht bij telling van het aantal geparkeerde voertuigen. |
-| <dfn data-dfn-for='DynamicSection'>parkedByVehicleType | {{VehicleTypeCount}}`[]`         | 0..N          | Telling per geparkeerd voertuigtype                                                                |
-| <dfn data-dfn-for='DynamicSection'>occupiedSpaces      | `number`                         | 0..1          | Aantal bezette plekken, berekend o.b.v. `capacityPerParkingSpaceOf` en `parkedByVehicleType`       |
-| {.data def}                                            |
+| Eigenschap                                                | Type                             | Kardinaliteit | Beschrijving                                                                                       | ProRail |
+| --------------------------------------------------------- | -------------------------------- | ------------- | -------------------------------------------------------------------------------------------------- | ------- |
+| <dfn data-dfn-for='DynamicSection'>section                | `string`                         | 1             | {{Section.id}} waarop deze telling betrekking heeft.                                               |
+| <dfn data-dfn-for='DynamicSection'>dynamicParkingFacility | `string`                         | 1             | {{ParkingFacility.id}} waarvan deze sectie deel uitmaakt.                                          |
+| <dfn data-dfn-for='DynamicSection'>timestamp              | [[rfc3339]] date-time (`string`) | 1             | Tijdstip van de meting, zie <a href='#geldigheid-door-de-tijd'></a>.                               |
+| <dfn data-dfn-for='DynamicSection'>survey                 | `string`                         | 1             | {{Survey.id}} waartoe deze meting behoort.                                                         |
+| <dfn data-dfn-for='DynamicSection'>parkingCapacity        | `number`                         | 0..1          | Totaal aantal plekken, verplicht bij capaciteitstelling.                                           |
+| <dfn data-dfn-for='DynamicSection'>totalParked            | `number`                         | 0..1          | Totaal aantal geparkeerde voertuigen, verplicht bij telling van het aantal geparkeerde voertuigen. |
+| <dfn data-dfn-for='DynamicSection'>parkedByVehicleType    | {{VehicleTypeCount}}`[]`         | 0..N          | Telling per geparkeerd voertuigtype                                                                |
+| <dfn data-dfn-for='DynamicSection'>occupiedSpaces         | `number`                         | 0..1          | Aantal bezette plekken, berekend o.b.v. `capacityPerParkingSpaceOf` en `parkedByVehicleType`       |
+| {.data def}                                               |
 
 Hierbij geldt het volgende:
 
 - Bij een capaciteitstelling is het veld {{DynamicSection.parkingCapacity}} VERPLICHT.
 - Bij een telling van het aantal geparkeerde voertuigen is het veld {{DynamicSection.totalParked}} VERPLICHT.
 
-_De rest van deze sectie is niet-normatief._
+_De rest van deze sectie is niet normatief._
 
-De velden surveyId, authorityId en contractorId kunnen gebruikt worden bij het filteren van data bij de zoekopdrachten van de API's 4 en 5.
-Je zou bijvoorbeeld kunnen alle metingen van een bepaald onderzoek die zijn uitgevoerd door een bepaalde contractor kunnen opvragen. Zie _API Requests_ voor meer details over zoekopdrachten.
+~~De velden surveyId, authorityId en contractorId kunnen gebruikt worden bij het filteren van data bij de zoekopdrachten van de API's 4 en 5.
+Je zou bijvoorbeeld kunnen alle metingen van een bepaald onderzoek die zijn uitgevoerd door een bepaalde contractor kunnen opvragen. Zie _API Requests_ voor meer details over zoekopdrachten.~~
 
 ### <dfn>`DynamicPlace`
 
@@ -325,7 +334,7 @@ Dit is voor later voorzien.
 
 <aside class='example'>
 
-1. 6 particuliere fietsen in het rek:
+1. Zes particuliere fietsen in het rek:
 
    ```json
    {
@@ -335,7 +344,7 @@ Dit is voor later voorzien.
    }
    ```
 
-2. 4 particuliere fietsen buiten het rek:
+2. Vier particuliere fietsen buiten het rek:
 
    ```json
    {
@@ -345,7 +354,7 @@ Dit is voor later voorzien.
    }
    ```
 
-3. 100 normale fietsen buiten voorziening:
+3. Honderd normale fietsen buiten voorziening:
 
    ```json
    {
@@ -392,7 +401,7 @@ Zoals of het een feestdag was op moment van telling.
 Met {{Vehicle}} kunnen uitgebreid kenmerken van fietsen, bromfietsen en andere voertuigen worden beschreven.
 Met {{CanonicalVehicle}} worden prototypische voertuigen voor een telling geconcretiseerd.
 
-_De rest van deze sectie is niet-normatief._
+_De rest van deze sectie is niet normatief._
 
 {{CanonicalVehicles}} worden gebruikt bij concrete opdrachten met een beperkte tel-resolutie:
 bijvoorbeeld als elk voertuig maar in één van vier categorieën wordt geteld:
