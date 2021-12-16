@@ -5,7 +5,7 @@
 	"vacantSpaces":	10, 
 	"occupiedSpaces": 90, 
 	"totalParked": 90,
-	"capacityPerParkingSpaceOf": CapacityPerParkingSpaceOf[],
+	"capacityPerParkingSpaceType": CapacityPerParkingSpaceType[],
 	"parkedByVehicleType": [
 		{ "vehicle": {"type": "b"}, "numberOfVehicles": 10, "parkState": "i"},
 		{ "canonicalVehicleIdentifier": "nl.prorail.fietsparkeren.type.A", "numberOfVehicles": 80 }

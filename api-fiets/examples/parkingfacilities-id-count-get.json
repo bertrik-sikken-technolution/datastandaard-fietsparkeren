@@ -6,7 +6,7 @@
 	"occupiedSpaces": 90,
 	"totalParked": 90,
 	"count": [{...},{...}],
-	"capacityPerParkingSpaceOf": [{...}, {...}],
+	"capacityPerParkingSpaceType": [{...}, {...}],
 	"note": {...}
 
 }
