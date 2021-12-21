@@ -128,6 +128,15 @@ Hierbij geldt steeds het volgende:
     - Bijvoorbeeld: bij een dagresolutie: - 1 dag.
   - Het tijdstip van de wijziging is de `validFrom` van de nieuwe instantie.
 
+### Geldigheid van geo-kenmerken
+
+- Een implementatie ZOU een update MOETEN afwijzen als
+  de waarde van {{ParkingFacility.geoLocation}} (1) overlapt met de {{ParkingFacility.geoLocation}} (2)
+  waarbij ook de [[[#geldigheid-door-de-tijd]]] elkaar overlappen,
+  behorende bij eenzelfde {{Survey}}.
+
+  - Een implementatie MAG aan de gebruiker een melding geven als dit gebeurt.
+
 ## Beveiliging, toegang, privacy
 
 ### Eigenaarschap

@@ -77,17 +77,17 @@ Geografische zoekopdrachten zijn ook mogelijk in de <a href='#rest-api'></a>, zo
 Het is een hulpmiddel om {{ParkingFacilities}} in een bepaald gebied te selecteren.
 Er is geen geadminstreerde relatie tussen onderzoeksgebieden en stallingsvoorzieningen: dat is puur een geografische relatie.
 
-| Eigenschap                                   | Type                             | Kardinaliteit | Beschrijving                                                                                           |
-| -------------------------------------------- | -------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------ |
-| <dfn data-dfn-for="SurveyArea">id            | `string`                         | 0..1          | Een [[=ResourceIdentifier=]].                                                                          |
-| <dfn data-dfn-for="SurveyArea">geoLocation   | GeoJSON                          | 1..1          | Geografische afbakening volgens [[rfc7946]].                                                           |
-| <dfn data-dfn-for="SurveyArea">parent        | {{SurveyArea.id}} (`string`)     | 0..1          | Verwijzing naar een onderzoeksgebied van een hogerliggende orde.                                       |
-| <dfn data-dfn-for="SurveyArea">validFrom     | [[rfc3339]] date-time (`string`) | 0..1          | Begin geldigheid                                                                                       |
-| <dfn data-dfn-for="SurveyArea">validThrough  | [[rfc3339]] date-time (`string`) | 0..1          | Einde geldigheid                                                                                       |
-| <dfn data-dfn-for="SurveyArea">authority     | {{Organisation.id}} (`string`)   | 1..1          | Eigenaar van dit onderzoeksgebied. Alleen deze organisatie mag wijzigingen aanbrengen aan deze sectie. |
-| <dfn data-dfn-for="SurveyArea">name          | `string[]`                       | 0..N          | Naam die de eigenaar of inwinner aan dit onderzoeksgebied geeft.                                       |
-| <dfn data-dfn-for="SurveyArea">alternateName | `string[]`                       | 0..N          | Alternatieve namen of IDs die de eigenaar of inwinner aan dit onderzoeksgebied geeft.                  |
-| {.data def}                                  |                                  |               |
+| Eigenschap                                  | Type                             | Kardinaliteit | Beschrijving                                                                                           |
+| ------------------------------------------- | -------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------ |
+| <dfn data-dfn-for="SurveyArea">id           | `string`                         | 0..1          | Een [[=ResourceIdentifier=]].                                                                          |
+| <dfn data-dfn-for="SurveyArea">geoLocation  | GeoJSON                          | 1..1          | Geografische afbakening volgens [[rfc7946]].                                                           |
+| <dfn data-dfn-for="SurveyArea">parent       | {{SurveyArea.id}} (`string`)     | 0..1          | Verwijzing naar een onderzoeksgebied van een hogerliggende orde.                                       |
+| <dfn data-dfn-for="SurveyArea">validFrom    | [[rfc3339]] date-time (`string`) | 0..1          | Begin geldigheid                                                                                       |
+| <dfn data-dfn-for="SurveyArea">validThrough | [[rfc3339]] date-time (`string`) | 0..1          | Einde geldigheid                                                                                       |
+| <dfn data-dfn-for="SurveyArea">authority    | {{Organisation.id}} (`string`)   | 1..1          | Eigenaar van dit onderzoeksgebied. Alleen deze organisatie mag wijzigingen aanbrengen aan deze sectie. |
+| <dfn data-dfn-for="SurveyArea">name         | `string[]`                       | 0..N          | Naam die de eigenaar of inwinner aan dit onderzoeksgebied geeft.                                       |
+| <dfn data-dfn-for="SurveyArea">altId        | `string[]`                       | 0..N          | Alternatieve IDs die de eigenaar of inwinner aan dit onderzoeksgebied geeft.                           |
+| {.data def}                                 |                                  |               |
 
 ## Stallingen, parkeervoorzieningen
 
@@ -123,14 +123,14 @@ Verdere kenmerken van de locatie, zoals openingstijden of bewaakt/onbewaakt word
 Wijzigingen in de onderliggende secties betekenen expliciet niet dat de parkeerlocatie wijzigt.
 Andersom betekent een nieuwe parkeerlocatie _wel_ dat ook de secties nieuw aangemaakt moeten worden -- zij verwijzen immers naar de parkeerlocatie waar ze toe behoren.
 
-Voor historische vergelijkingen kan op basis van de geometrie en/of `alternateName` bepaald worden of het om (min of meer) dezelfde parkeerlocatie gaat.
+Voor historische vergelijkingen kan op basis van de geometrie en/of `altId` bepaald worden of het om (min of meer) dezelfde parkeerlocatie gaat.
 
 | Eigenschap                                          | Type                             | Kardinaliteit | Beschrijving                                                             |
 | --------------------------------------------------- | -------------------------------- | ------------- | ------------------------------------------------------------------------ |
 | <dfn data-dfn-for="ParkingFacility">id              | `string`                         | 1             | Een [[=ResourceIdentifier=]].                                            |
 | <dfn data-dfn-for="ParkingFacility">geoLocation     | GeoJSON                          | 1..1          | Geografische afbakening volgens [[rfc7946]].                             |
 | <dfn data-dfn-for="ParkingFacility">name            | `string`                         | 0..1          | Namen voor de voorziening.                                               |
-| <dfn data-dfn-for="ParkingFacility">alternateName   | `string[]`                       | 0..N          | Alternatieve namen of IDs van de eigenaar of inwinner.                   |
+| <dfn data-dfn-for="ParkingFacility">altId           | `string[]`                       | 0..N          | Alternatieve IDs van de eigenaar of inwinner.                            |
 | <dfn data-dfn-for="ParkingFacility">securityFeature | {{SecurityFeature}}`[]`          | 0..N          | Beveiligingskenmerken                                                    |
 | <dfn data-dfn-for="ParkingFacility">allows          | {{Vehicle}}`[]`                  | 1..N          | Toegestane voertuigtypen voor deze parkeerlocatie.                       |
 | <dfn data-dfn-for="ParkingFacility">validFrom       | [[rfc3339]] date-time (`string`) | 0..1          | Zie <a href='#geldigheid-door-de-tijd'></a>.                             |
@@ -168,7 +168,7 @@ Voor bijvoorbeeld handmatige tellers kan dat wel handig zijn.
 | <dfn data-dfn-for='Section'>id              | `string`                          | 0..1          | Een [[=ResourceIdentifier=]].                                                                                              |
 | <dfn data-dfn-for='Section'>parkingFacility | {{ParkingFacility.id}} (`string`) | 1             | Koppeling naar de ParkingFacility waar de sectie deel van uitmaakt.                                                        |
 | <dfn data-dfn-for="Section">name            | `string`                          | 0..1          | Namen voor de voorziening.                                                                                                 |
-| <dfn data-dfn-for="Section">alternateName   | `string[]`                        | 0..N          | Alternatieve namen of IDs van de eigenaar of inwinner.                                                                     |
+| <dfn data-dfn-for="Section">altId           | `string[]`                        | 0..N          | Alternatieve IDs van de eigenaar of inwinner.                                                                              |
 | <dfn data-dfn-for='Section'>geoLocation     | GeoJSON                           | 0..1          | Geografische afbakening volgens [[rfc7946]].                                                                               |
 | <dfn data-dfn-for='Section'>parkingSpaceOf  | {{ParkingSpaceType}}`[]`          | 1..N          | De types parkeervoorziening.                                                                                               |
 | <dfn data-dfn-for='Section'>level           | `number`                          | 0..1          | De etage in de ParkingFacility waar deze sectie zich bevindt. -1 = onder maaiveld, 0 = maaiveld (default), 1 = verdieping. |
@@ -238,24 +238,83 @@ Volstaat wellicht een algemeen `Measurement`?
 
 </aside>
 
+### <dfn>`Observation`
+
+| Eigenschap                                        | Type                             | Kardinaliteit | Beschrijving                                                                   |
+| ------------------------------------------------- | -------------------------------- | ------------- | ------------------------------------------------------------------------------ |
+| <dfn data-dfn-for='Observation'>id                | `string`                         | 1             | Een [[=ResourceIdentifier=]].                                                  |
+| <dfn data-dfn-for='Observation'>timestamp\*       | [[rfc3339]] date-time (`string`) | 1             | Tijdstip van de meting, zie <a href='#geldigheid-door-de-tijd'></a>.           |
+| <dfn data-dfn-for='Observation'>survey\*          | `string`                         | 1             | {{Survey.id}} waartoe deze meting behoort.                                     |
+| <dfn data-dfn-for='Observation'>note\*            | {{Note}}                         | 0..1          | Notities over de meting in deze sectie                                         |
+| <dfn data-dfn-for='Observation'>observedProperty  | `string`                         | 1             | `capacity` of `occupation`.                                                    |
+| <dfn data-dfn-for='Observation'>featureOfInterest | `string`                         | 1             | {{ParkingFacility.id}} of {{Section.id}} waarop deze telling betrekking heeft. |
+| <dfn data-dfn-for='Observation'>measurement       | `string`                         | 1             | {{CapacityMeasurement.id}} of {{OccupationMeasurement.id}} met de meting zelf. |
+| {.data def}                                       |
+
+<aside class='issue'>
+
+Redmer: Ik heb nu de metingen gesplits in bezettingsmetingen en capaciteitsmetingen,
+om een de verschillende kardinaliteiten te accomoderen
+én om verwijzing mogelijk te maken bij een bezettingstelling ({{OccupationMeasurement.vacantSpaces}}) te verwijzen naar een bep. {{CapacityMeasurement}}.
+
+</aside>
+
+#### Enum <dfn>`ObservationType`
+
+Dit type maakt vereenvoudigt filtering op het type
+
+| Enum    | Omschrijving     |
+| ------- | ---------------- |
+| `b`     | Bezettingsmeting |
+| `c`     | Capaciteitmeting |
+| {.data} |
+
+### <dfn>`CapacityMeasurement`
+
+Noot:
+Komt overeen met `sosa:Result`.
+
+| Eigenschap                                                          | Type                                | Kardinaliteit | Beschrijving                                                                           |
+| ------------------------------------------------------------------- | ----------------------------------- | ------------- | -------------------------------------------------------------------------------------- |
+| <dfn data-dfn-for='CapacityMeasurement'>id                          | `string`                            | 1             | Een [[=ResourceIdentifier=]].                                                          |
+| <dfn data-dfn-for='CapacityMeasurement'>parkingCapacity             | `number`                            | 1             | Totaal aantal parkeervoorzieningen.                                                    |
+| <dfn data-dfn-for='CapacityMeasurement'>capacityPerParkingSpaceType | {{CapacityPerParkingSpaceType}}`[]` | 1..N          | Capaciteit per type parkeervoorziening, over de hele stalling. Sommering bij indienen. |
+| {.data def}                                                         |
+
+### <dfn>`OccupationMeasurement`
+
+| Eigenschap                                                    | Type                     | Kardinaliteit | Beschrijving                                                                                   |
+| ------------------------------------------------------------- | ------------------------ | ------------- | ---------------------------------------------------------------------------------------------- |
+| <dfn data-dfn-for='OccupationMeasurement'>id                  | `string`                 | 1             | Een [[=ResourceIdentifier=]].                                                                  |
+| <dfn data-dfn-for='OccupationMeasurement'>totalParked         | `number`                 | 1             | Aantal getelde voertuigen, verplicht als één of meerdere onderdelen dit gemeten hebben.        |
+| <dfn data-dfn-for='OccupationMeasurement'>occupiedSpaces      | `number`                 | 0..1          | Aantal bezette plekken, berekend o.b.v. `capacityPerParkingSpaceType` en `parkedByVehicleType` |
+| <dfn data-dfn-for='OccupationMeasurement'>parkedByVehicleType | {{VehicleTypeCount}}`[]` | 0..N          | Telling per geparkeerd voertuigtype                                                            |
+| <dfn data-dfn-for='OccupationMeasurement'>count               | {{VehicleTypeCount}}`[]` | 1..N          | Verzameling van tellingen.                                                                     |
+| <dfn data-dfn-for='OccupationMeasurement'>vacantSpaces        | `number`                 | 0..1          | Aantal vrije plekken.                                                                          |
+| <dfn data-dfn-for='OccupationMeasurement'>basedOffCapacity    | `string`                 | 0..1          | De {{CapacityMeasurement.id}} waar de {{OccupationMeasurement.vacantSpaces}} van afgeleid is.  |
+| {.data def}                                                   |
+
 ### <dfn>`DynamicParkingFacility`
+
+TODO: Splits in twee: bezetting en capaciteit, verwijzing bij eerste naar laatste
 
 Deze telling of meting registreert het aantal geparkeerde voertuigen en/of de capaciteit daarvoor.
 In onderstaande tabel staat Kard.<sub>capaciteit</sub> voor de kardinaliteit van de eigenschappen van een capaciteitstelling;
 Kard.<sub>bezetting</sub> staat voor de kardinaliteit van de eigenschappen bij een bezettingstelling.
 
-| Eigenschap                                                             | Type                                | Kard.<sub>bezetting</sub> | Kard.<sub>capaciteit</sub> | Beschrijving                                                                            |
-| ---------------------------------------------------------------------- | ----------------------------------- | ------------------------- | -------------------------- | --------------------------------------------------------------------------------------- |
-| <dfn data-dfn-for='DynamicParkingFacility'>parkingFacility             | `string`                            | 1                         | 1                          | {{ParkingFacility.id}} waarop deze telling betrekking heeft.                            |
-| <dfn data-dfn-for='DynamicParkingFacility'>survey                      | `string`                            | 1                         | 1                          | {{Survey.id}} waartoe deze meting behoort.                                              |
-| <dfn data-dfn-for='DynamicParkingFacility'>timestamp                   | [[rfc3339]] date-time (`string`)    | 1                         | 1                          | Tijdstip van de meting, zie <a href='#geldigheid-door-de-tijd'></a>.                    |
-| <dfn data-dfn-for='DynamicParkingFacility'>note                        | {{Note}}                            | 0..1                      | 0..1                       | Notities over de meting in deze sectie                                                  |
-| <dfn data-dfn-for='DynamicParkingFacility'>parkingCapacity             | `number`                            | 0                         | 1                          | Totaal aantal plekken, verplicht als één of meerdere onderdelen dit gemeten hebben.     |
-| <dfn data-dfn-for='DynamicParkingFacility'>capacityPerParkingSpaceType | {{CapacityPerParkingSpaceType}}`[]` | 0                         | 1..N                       | Capaciteit per type parkeervoorziening, over de hele stalling. Sommering bij indienen.  |
-| <dfn data-dfn-for='DynamicParkingFacility'>totalParked                 | `number`                            | 1                         | 0                          | Aantal getelde voertuigen, verplicht als één of meerdere onderdelen dit gemeten hebben. |
-| <dfn data-dfn-for='DynamicParkingFacility'>count                       | {{VehicleTypeCount}}`[]`            | 1..N                      | 0                          | Verzameling van tellingen.                                                              |
-| <dfn data-dfn-for='DynamicParkingFacility'>vacantSpaces                | `number`                            | 0..1                      | 0                          | Aantal vrije plekken.                                                                   |
-| <dfn data-dfn-for='DynamicParkingFacility'>occupiedSpaces              | `number`                            | 0..1                      | 0                          | Aantal bezette plekken, verplicht als één of meerdere onderdelen dit gemeten hebben.    |
+| Eigenschap                                                             | Type                                | Kard.<sub>bezetting</sub> | Kard.<sub>capaciteit</sub>    | Beschrijving                                                                            |
+| ---------------------------------------------------------------------- | ----------------------------------- | ------------------------- | ----------------------------- | --------------------------------------------------------------------------------------- |
+| <dfn data-dfn-for='DynamicParkingFacility'>id                          | `string`                            | 1                         | Een [[=ResourceIdentifier=]]. |
+| <dfn data-dfn-for='DynamicParkingFacility'>parkingFacility             | `string`                            | 1                         | 1                             | {{ParkingFacility.id}} waarop deze telling betrekking heeft.                            |
+| <dfn data-dfn-for='DynamicParkingFacility'>survey                      | `string`                            | 1                         | 1                             | {{Survey.id}} waartoe deze meting behoort.                                              |
+| <dfn data-dfn-for='DynamicParkingFacility'>timestamp                   | [[rfc3339]] date-time (`string`)    | 1                         | 1                             | Tijdstip van de meting, zie <a href='#geldigheid-door-de-tijd'></a>.                    |
+| <dfn data-dfn-for='DynamicParkingFacility'>note                        | {{Note}}                            | 0..1                      | 0..1                          | Notities over de meting in deze sectie                                                  |
+| <dfn data-dfn-for='DynamicParkingFacility'>parkingCapacity             | `number`                            | 0                         | 1                             | Totaal aantal plekken, verplicht als één of meerdere onderdelen dit gemeten hebben.     |
+| <dfn data-dfn-for='DynamicParkingFacility'>capacityPerParkingSpaceType | {{CapacityPerParkingSpaceType}}`[]` | 0                         | 1..N                          | Capaciteit per type parkeervoorziening, over de hele stalling. Sommering bij indienen.  |
+| <dfn data-dfn-for='DynamicParkingFacility'>totalParked                 | `number`                            | 1                         | 0                             | Aantal getelde voertuigen, verplicht als één of meerdere onderdelen dit gemeten hebben. |
+| <dfn data-dfn-for='DynamicParkingFacility'>count                       | {{VehicleTypeCount}}`[]`            | 1..N                      | 0                             | Verzameling van tellingen.                                                              |
+| <dfn data-dfn-for='DynamicParkingFacility'>vacantSpaces                | `number`                            | 0..1                      | 0                             | Aantal vrije plekken.                                                                   |
+| <dfn data-dfn-for='DynamicParkingFacility'>occupiedSpaces              | `number`                            | 0..1                      | 0                             | Aantal bezette plekken, verplicht als één of meerdere onderdelen dit gemeten hebben.    |
 | {.data def}                                                            |
 
 <aside class='issue'>
@@ -270,7 +329,7 @@ Kard.<sub>bezetting</sub> staat voor de kardinaliteit van de eigenschappen bij e
 Redmer: kunnen we alleen {{DynamicParkingFacility.totalParked}} verplicht maken?
 Otto: Of duidelijk maken dat deze waardes afgeleid zijn van een capaciteitsmeting?
 
-Redmer: of {{vacantSpaces}} en {{occupiedSpaces}} uit elkaar trekken: één berekend, één gemeten.
+Redmer: of `vacantSpaces` en `occupiedSpaces` uit elkaar trekken: één berekend, één gemeten.
 
 Redmer: of de API het laten berekenen.
 
@@ -278,19 +337,22 @@ Redmer: of de API het laten berekenen.
 
 ### <dfn>`DynamicSection`
 
+TODO: Splits in twee: bezetting en capaciteit, verwijzing bij eerste naar laatste
+
 Een telling of meting kan gaan over het aantal parkeerplekken (evt. naar type) en/of
 het aantal geparkeerde voertuigen (evt. naar type) in een sectie.
 
-| Eigenschap                                                | Type                             | Kardinaliteit | Beschrijving                                                                                       | ProRail |
-| --------------------------------------------------------- | -------------------------------- | ------------- | -------------------------------------------------------------------------------------------------- | ------- |
-| <dfn data-dfn-for='DynamicSection'>section                | `string`                         | 1             | {{Section.id}} waarop deze telling betrekking heeft.                                               |
-| <dfn data-dfn-for='DynamicSection'>dynamicParkingFacility | `string`                         | 1             | {{DynamicParkingFacility.id}} waarvan deze sectie deel uitmaakt.                                   |
-| <dfn data-dfn-for='DynamicSection'>timestamp              | [[rfc3339]] date-time (`string`) | 1             | Tijdstip van de meting, zie <a href='#geldigheid-door-de-tijd'></a>.                               |
-| <dfn data-dfn-for='DynamicSection'>survey                 | `string`                         | 1             | {{Survey.id}} waartoe deze meting behoort.                                                         |
-| <dfn data-dfn-for='DynamicSection'>parkingCapacity        | `number`                         | 0..1          | Totaal aantal plekken, verplicht bij capaciteitstelling.                                           |
-| <dfn data-dfn-for='DynamicSection'>totalParked            | `number`                         | 0..1          | Totaal aantal geparkeerde voertuigen, verplicht bij telling van het aantal geparkeerde voertuigen. |
-| <dfn data-dfn-for='DynamicSection'>parkedByVehicleType    | {{VehicleTypeCount}}`[]`         | 0..N          | Telling per geparkeerd voertuigtype                                                                |
-| <dfn data-dfn-for='DynamicSection'>occupiedSpaces         | `number`                         | 0..1          | Aantal bezette plekken, berekend o.b.v. `capacityPerParkingSpaceType` en `parkedByVehicleType`     |
+| Eigenschap                                                | Type                             | Kard.<sub>Bezetting</sub> | Kard.<sub>Capaciteits</sub>   | Beschrijving                                                                                       | ProRail |
+| --------------------------------------------------------- | -------------------------------- | ------------------------- | ----------------------------- | -------------------------------------------------------------------------------------------------- | ------- |
+| <dfn data-dfn-for='DynamicSection'>id                     | `string`                         | 1                         | Een [[=ResourceIdentifier=]]. |
+| <dfn data-dfn-for='DynamicSection'>section                | `string`                         | 1                         | 1                             | {{Section.id}} waarop deze telling betrekking heeft.                                               |
+| <dfn data-dfn-for='DynamicSection'>dynamicParkingFacility | `string`                         | 1                         | 1                             | {{DynamicParkingFacility.id}} waarvan deze sectie deel uitmaakt.                                   |
+| <dfn data-dfn-for='DynamicSection'>timestamp              | [[rfc3339]] date-time (`string`) | 1                         | 1                             | Tijdstip van de meting, zie <a href='#geldigheid-door-de-tijd'></a>.                               |
+| <dfn data-dfn-for='DynamicSection'>survey                 | `string`                         | 1                         | 1                             | {{Survey.id}} waartoe deze meting behoort.                                                         |
+| <dfn data-dfn-for='DynamicSection'>parkingCapacity        | `number`                         |                           | 1                             | Totaal aantal plekken, verplicht bij capaciteitstelling.                                           |
+| <dfn data-dfn-for='DynamicSection'>totalParked            | `number`                         | 1                         |                               | Totaal aantal geparkeerde voertuigen, verplicht bij telling van het aantal geparkeerde voertuigen. |
+| <dfn data-dfn-for='DynamicSection'>parkedByVehicleType    | {{VehicleTypeCount}}`[]`         | 0..N                      |                               | Telling per geparkeerd voertuigtype                                                                |
+| <dfn data-dfn-for='DynamicSection'>occupiedSpaces         | `number`                         | 0..1                      |                               | Aantal bezette plekken, berekend o.b.v. `capacityPerParkingSpaceType` en `parkedByVehicleType`     |
 | {.data def}                                               |
 
 Hierbij geldt het volgende:
