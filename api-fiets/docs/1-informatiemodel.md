@@ -6,7 +6,7 @@ Het omvat definities, gebruik en API’s voor:
 1. Uitgebreide beschrijvingen van fietstypen ({{Vehicle}}).
 2. Fietsenstallingen en fietsparkeervoorzieningen ({{ParkingFacility}}), ook op detailniveau ({{Section}});
 3. Tellingen binnen die (deel)voorzieningen ({{DynamicParkingFacility}} en {{DynamicSection}});
-4. Vastgestelde onderzoeks(deel)gebieden ({{SurveyAreas}}) en tellingen ({{Survey}});
+4. Vastgestelde onderzoeks(deel)gebieden ({{SurveyArea}}s) en tellingen ({{Survey}});
 
 <figure>
 <img src="docs/objecten.drawio.svg">
@@ -16,7 +16,7 @@ Het omvat definities, gebruik en API’s voor:
 ## Onderzoeken en inwinningen
 
 Een {{Survey}} groepeert een bron: het representeert een onderzoek of inwinning, incidenteel of doorlopend, in opdracht van een bepaalde {{Organisation}}.
-Daarbij MOGEN één of meerdere onderzoeksgebieden, {{SurveyAreas}}, worden meegegeven: een geografische afbakening van een gebied, dat voor bepaalde rapportages of inzichten nuttig is.
+Daarbij MOGEN één of meerdere onderzoeksgebieden, {{SurveyArea}}s, worden meegegeven: een geografische afbakening van een gebied, dat voor bepaalde rapportages of inzichten nuttig is.
 Daarvoor worden dan overlappende {{ParkingFacilities}} meegenomen: een SurveyArea is niet een telgebied zelf.
 
 Een implementatie MAG de inzender ‘eigenaar’ laten worden van een Survey:
@@ -46,7 +46,7 @@ Een Survey
 | <dfn data-dfn-for="Survey">authority                      | `string`                 | 1             | {{Organisation.id}} van de opdrachtgever.                                   |
 | <dfn data-dfn-for="Survey">contractors                    | `string[]`               | 1..N          | {{Organisation.id}} van de uitvoerder.                                      |
 | <dfn data-dfn-for="Survey">license                        | `string`                 | 0..1          | Licentie voor het gebruik van de data (vormvrij).                           |
-| <dfn data-dfn-for="Survey">surveyArea                     | `string[]`               | 0..N          | De {{SurveyArea.id}} van de onderzoeksgebieden die dit onderzoek aandraagt. |
+| <dfn data-dfn-for="Survey">surveyAreas                    | `string[]`               | 0..N          | De {{SurveyArea.id}} van de onderzoeksgebieden die dit onderzoek aandraagt. |
 | <dfn data-dfn-for="Survey">distinguishesVehicleCategories | {{CanonicalVehicle}}`[]` | 0..N          | De voertuigtypes die voor dit onderzoek worden onderscheiden in tellingen.  |
 | {.data def }                                              |
 

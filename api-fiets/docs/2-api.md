@@ -323,7 +323,7 @@ Als objecttypen voorzien zijn van exacte geo-coördinaten, MOET een implementati
 #### Inhoudelijk
 
 Alle tellingsgegevens worden in de context van een {{Survey}} ingevoerd (cf. <a href='#relatie-objecttypen'></a>).
-Ook {{SurveyAreas}} hebben een relatie tot een Survey.
+Ook {{SurveyArea}}s hebben een relatie tot een Survey.
 
 Een implementatie MOET kunnen filteren op {{authorityID}}, {{contractorID}} en {{surveyID}}.
 
@@ -385,11 +385,11 @@ Registreer en beheer Surveys en SurveyAreas en leg de koppeling tussen beide.
 <li>{{endDate}}
 </ul>
 
-| HTTP-methode                        | Type                                  | Beschrijving                                                                                                |
-| ----------------------------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| <dfn>GET `/surveys/{id}/areas`      | {{ResultWrapper}}`<`{{SurveyArea}}`>` | Toon SurveysAreas die voorkomen bij {{Survey.surveyArea}} bij de Survey waar {{Survey.id}} = <var>id</var>. |
-| <dfn>POST `/surveys/{id}/areas`     | {{SurveyArea}}                        | Voeg een SurveyArea toe aan een Survey waar {{Survey.id}} = <var>id</var>.                                  |
-| <dfn>PUT `/surveys/{id}/areas/{id}` | `Partial<`{{SurveyArea}}`>`           | Update de SurveyArea waar {{SurveyArea.id}} = <var>id₂</var>.                                               |
+| HTTP-methode                        | Type                                  | Beschrijving                                                                                                 |
+| ----------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| <dfn>GET `/surveys/{id}/areas`      | {{ResultWrapper}}`<`{{SurveyArea}}`>` | Toon SurveysAreas die voorkomen bij {{Survey.surveyAreas}} bij de Survey waar {{Survey.id}} = <var>id</var>. |
+| <dfn>POST `/surveys/{id}/areas`     | {{SurveyArea}}                        | Voeg een SurveyArea toe aan een Survey waar {{Survey.id}} = <var>id</var>.                                   |
+| <dfn>PUT `/surveys/{id}/areas/{id}` | `Partial<`{{SurveyArea}}`>`           | Update de SurveyArea waar {{SurveyArea.id}} = <var>id₂</var>.                                                |
 | {.data def }                        |
 
 **Standaardfilters voor <a href='#dfn-get-surveys-id-areas'>GET `/surveys/{id}/areas`</a>**
@@ -415,7 +415,7 @@ Registreer en beheer Surveys en SurveyAreas en leg de koppeling tussen beide.
 <pre class='example json' title='POST /surveys/{id}/areas' data-include='examples/surveys-id-areas-parent-post.json' data-include-format='text'></pre>
 
 <aside class='issue'>
-Op deze manier zijn {{SurveyAreas}} niet te bevragen zonder een {{Survey}} waar ze bij horen.
+Op deze manier zijn {{SurveyArea}}s niet te bevragen zonder een {{Survey}} waar ze bij horen.
 </aside>
 
 ## REST-API: stallingen, parkeervoorzieningen
