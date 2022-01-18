@@ -1,0 +1,45 @@
+{
+  "@context": {
+    "schema": "http://schema.org/",
+    "mv": "http://schema.mobivoc.org/#",
+    "vp": "https://data.velopark.be/openvelopark/vocabulary#",
+    "vpt": "https://data.velopark.be/openvelopark/terms#",
+    "time": "http://www.w3.org/2006/time#",
+    "fp": "https://data.crow.nl/dsfp/def#",
+    "Survey": "fp:Survey",
+    "SurveyArea": "fp:SurveyArea",
+    "Organisation": "schema:Organization",
+    "ParkingFacility": "mv:BicycleParkingStation",
+    "Section": "fp:BicycleParkingStationSubsection",
+    "id": "@id",
+    "name": "schema:name",
+    "authority": {
+      "@id": "fp:authority",
+      "@type": "@id"
+    },
+    "contractors": {
+      "@id": "fp:contractor",
+      "@type": "@id"
+    },
+    "license": "schema:license",
+    "surveyAreas": {
+      "@id": "schema:geoCovers",
+      "@type": "@id"
+    },
+    "distinguishesVehicleTypes": {
+      "@id": "fp:distinguishesVehicleTypes"
+    },
+    "geoLocation": "schema:geo",
+    "parent": "schema:geoWithin",
+    "validFrom": "schema:validFrom",
+    "validThrough": "schema:validThrough",
+    "altId": "schema:identifier",
+    "securityFeature": "mv:feature",
+    "allows": "vp:allows",
+    "parkingFacility": "nen2660:partOf",
+    "parkingSpaceOf": "fp:parkingSpaceOf",
+    "level": "mv:level",
+    "type": "fp:parkingSystem",
+    "vehicles": "fp:vehicle"
+  }
+}

@@ -1,0 +1,125 @@
+openapi: '3.0.2'
+info:
+  title: Datastandaard fietsparkeren
+  version: '1.0'
+security: []
+servers:
+  - url: https://api.server.test/v1
+components:
+  securitySchemes:
+    "api_key":
+      type: apiKey
+      name: Implementation-specific API access control
+      in: header
+  schemas:
+    Survey:
+      title: Survey
+      description: |
+        nl@Een onderzoek of inwinning die incidenteel of doorlopend in opdracht van een bepaalde opdrachtgever wordt uitgevoerd door een of meerdere aannemers.
+        en@An investigation of data collection, incidentally or continiously on behalf of a client by a contractor.
+      type: object
+      required:
+        - "name"
+        - "authority"
+        - "contractors"
+      properties:
+        id:
+            $ref: '#/components/schemas/ResourceIdentifier'
+        name: 
+          type: string
+          description: |
+            en@Title of the survey
+            nl@Naam van het onderzoek
+        authority:
+          type: string
+          description: |
+            en@{{Organisation.id}} of the client.
+            nl@{{Organisation.id}} van de opdrachtgever.
+        contractors:
+          type: array
+          items:
+            type: string
+            description: |
+              en@{{Organisation.id}} of the contractor.
+              nl@{{Organisation.id}} van de opdrachtnemer.
+        license: 
+          type: string
+          description: |
+            en@License for using the data (reference or text).
+            nl@Licentie voor het gebruik van de data (vormvrij.)
+        surveyAreas:
+          type: array
+          items:
+            type: string
+            description: |
+              en@
+        distinguishesVehicleCategories:
+          type: array
+          items:
+            $ref: '#/components/schemas/CanonicalVehicle'
+    Organisation:
+      type: object
+      title: Organisation
+      required:
+        - "name"
+      properties:
+        id:
+            $ref: '#/components/schemas/ResourceIdentifier'
+        name: 
+          type: string
+          description: |
+            en@Title of the organisation
+            nl@Naam van de instantie
+    SurveyArea:
+      type: object
+      title: SurveyArea
+    ParkingFacility:
+      type: object
+      title: Parking facility
+    Section:
+      type: object
+      title: Section
+    ParkingSpaceType:
+      type: object
+      title: Parking space type
+    Observation:
+      type: object
+      title: Observation
+    CapacityMeasurement:
+      type: object
+      title: Capactiy measurement
+    OccupationMeasurement:
+      type: object
+      title: Occupation measurement
+    CapacityPerParkingSpaceType:
+      type: object
+      title: .
+    VehicleTypeCount:
+      type: object
+      title: .
+    Note:
+      type: object
+      title: ...
+    Vehicle: 
+      type: object
+      title: ....
+    CanonicalVehicle:
+      type: object
+      title: CanonicalVehicle
+    Accessory:
+      type: object
+      title: Accessory
+    VehicleState:
+      type: object
+      title: VehicleState
+    ResourceIdentifier:
+      type: string
+      description: |
+        en@A unique identifier.
+        nl@Een URL of code die uniek één resource identificeert.
+paths:
+  /test:
+    get:
+      responses:
+        '200':
+          description: OK

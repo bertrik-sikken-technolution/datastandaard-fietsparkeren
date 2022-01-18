@@ -385,12 +385,12 @@ Registreer en beheer Surveys en SurveyAreas en leg de koppeling tussen beide.
 <li>{{endDate}}
 </ul>
 
-| HTTP-methode                        | Type                                  | Beschrijving                                                                                                 |
-| ----------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| <dfn>GET `/surveys/{id}/areas`      | {{ResultWrapper}}`<`{{SurveyArea}}`>` | Toon SurveysAreas die voorkomen bij {{Survey.surveyAreas}} bij de Survey waar {{Survey.id}} = <var>id</var>. |
-| <dfn>POST `/surveys/{id}/areas`     | {{SurveyArea}}                        | Voeg een SurveyArea toe aan een Survey waar {{Survey.id}} = <var>id</var>.                                   |
-| <dfn>PUT `/surveys/{id}/areas/{id}` | `Partial<`{{SurveyArea}}`>`           | Update de SurveyArea waar {{SurveyArea.id}} = <var>id₂</var>.                                                |
-| {.data def }                        |
+| HTTP-methode                  | Type                                  | Beschrijving                                                                                                 |
+| ----------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| <dfn>GET `/survey-areas`      | {{ResultWrapper}}`<`{{SurveyArea}}`>` | Toon SurveysAreas die voorkomen bij {{Survey.surveyAreas}} bij de Survey waar {{Survey.id}} = <var>id</var>. |
+| <dfn>POST `/survey-areas`     | {{SurveyArea}}                        | Voeg een SurveyArea toe aan een Survey waar {{Survey.id}} = <var>id</var>.                                   |
+| <dfn>PUT `/survey-areas/{id}` | `Partial<`{{SurveyArea}}`>`           | Update de SurveyArea waar {{SurveyArea.id}} = <var>id</var>.                                                 |
+| {.data def }                  |
 
 **Standaardfilters voor <a href='#dfn-get-surveys-id-areas'>GET `/surveys/{id}/areas`</a>**
 
@@ -436,6 +436,8 @@ Registreer en beheer ParkingFacilities en bijbehorende Sections.
 <pre class='example json' title='POST /parkingfacilities/{id}/sections' data-include='examples/parkingFacilities-id-sections-post.json' data-include-format='text'></pre>
 
 ## REST-API: tellingen, metingen en capaciteit
+
+TODO: Algoritme voor combineren van onderdelen.
 
 Verkrijg gemeten aantallen fietsen in {{ParkingFacilities}} en bijbehorende {{Section}}s.
 
