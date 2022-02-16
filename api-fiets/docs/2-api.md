@@ -439,6 +439,13 @@ Registreer en beheer ParkingFacilities en bijbehorende Sections.
 
 TODO: Algoritme voor combineren van onderdelen.
 
+TODO: Kun je teldata alleen toevoegen per Sectie?
+Nou, {{Observation.featureOfInterest}} is makkelijk om alleen op {{Section}} te doen.
+Homogeniteit is gewenst bij Sections, maar niet verplicht.
+Wel soort van verplicht bij ProRail.
+
+ProRail: Alleen {{Observation}}s op sectieniveau.
+
 Verkrijg gemeten aantallen fietsen in {{ParkingFacilities}} en bijbehorende {{Section}}s.
 
 | HTTP-methode                                               | Type                                              | Beschrijving                                                      |

@@ -146,11 +146,21 @@ Voor historische vergelijkingen kan op basis van de geometrie en/of `altId` bepa
 > en onze Geen-ProRail-Locatie 545-023.0-61 maaiveld.
 > mogelijkheid 'kenmerk maaiveld' vs. 'relatie authority-identifier' vs. '...'
 > deprecate altId
+> extra kenmerk: 'nl-prorail-indicatie-maaiveld'
+
+DRGL-code : Rsd --
+FE-code : 625
+KM-code 545-023.0 --
+
+beheer: extra kenmerk ParkingFacility (nl-prorail-indicatie-maaiveld), als voor Section.
+TODO: Annoteer zo'n extra eigenschap op {{Survey}}, wat het betekent.
+
+TODO: Toevoegen inpandig/maaiveld (indoor / ground level)
 
 #### Enum <dfn>`SecurityFeature`
 
 > NOOT:
-> Moet een beveiligingsvoorziening niet op het niveau van een {{Section}} worden aangegeven?
+> Moet een beveiligingsvoorziening niet op het niveau van een {{Section}} worden aangegeven? >> NEE
 
 | Enum                   | Beschrijving                                  |
 | ---------------------- | --------------------------------------------- |
@@ -158,6 +168,11 @@ Voor historische vergelijkingen kan op basis van de geometrie en/of `altId` bepa
 | `LockerService`        | Fietskluizen aanwezig.                        |
 | `PersonnelSupervision` | De stalling is bemenst.                       |
 | `ElectronicAccess`     | Een elektronisch toegangssysteem is aanwezig. |
+| ``                     | Onbekwaakt                                    |
+| `PersonnelSupervision` | Bemenst bewaakt                               |
+|                        | Onbemenst bewaakt                             |
+|                        | Onbemenst Gebouwd                             |
+|                        | Uitpandige maaiveldstalling                   |
 | {.data def}            |
 
 ### <dfn>`Section`
@@ -209,18 +224,19 @@ Minstens één van {{ParkingSpaceType.type}} of {{ParkingSpaceType.vehicles}} MO
 
 #### Enum <dfn>`ParkingSystemType`
 
-| Enum    | Beschrijving      | ProRail |
-| ------- | ----------------- | ------- |
-| `x`     | geen voorziening  |
-| `r`     | rek               | \*      |
-| `e`     | etagerek          | \*      |
-| `b`     | etagerek-boven    | \*      |
-| `o`     | etagerek-onder    | \*      |
-| `k`     | kluis             | \*      |
-| `n`     | nietjes           |
-| `v`     | vak               | \*      |
-| `w`     | van fietsenwinkel |
-| `a`     | anders            |
+| Enum    | Beschrijving                 |
+| ------- | ---------------------------- |
+| `x`     | geen voorziening             |
+| `r`     | rek                          |
+| `rb`    | rek (buitenmodel)            |
+| `b`     | etagerek-boven               |
+| `bb`    | etagerek-boven (buitenmodel) |
+| `o`     | etagerek-onder               |
+| `ob`    | etagerek-onder (buitenmodel) |
+| `k`     | kluis                        |
+| `n`     | nietjes                      |
+| `v`     | vak                          |
+| `a`     | anders                       |
 | {.data} |
 
 ### <dfn>`ParkingSpace`
@@ -303,6 +319,11 @@ Komt overeen met `sosa:Result`.
 | <dfn data-dfn-for='CapacityMeasurement'>parkingCapacity             | `number`                            | 1             | Totaal aantal parkeervoorzieningen.                                                    |
 | <dfn data-dfn-for='CapacityMeasurement'>capacityPerParkingSpaceType | {{CapacityPerParkingSpaceType}}`[]` | 1..N          | Capaciteit per type parkeervoorziening, over de hele stalling. Sommering bij indienen. |
 | {.data def}                                                         |
+
+De waarde van
+{{CapacityMeasurement.parkingCapacity}},
+{{CapacityMeasurement.capacityPerParkingSpaceType}}
+MOET een geheel getal (integer) zijn.
 
 ### <dfn>`OccupationMeasurement`
 
@@ -397,10 +418,10 @@ Komt overeen met `sosa:Result`.
 | Enum    | Omschrijving                  | ProRail |
 | ------- | ----------------------------- | ------- |
 | `i`     | In voorziening                |         |
-| `j`     | In voorziening, juist gestald | \*      |
-| `k`     | In voorziening, neemt plek in | \*      |
-| `p`     | nabij voorziening             | \*      |
-| `x`     | buiten voorziening            | \*      |
+| `j`     | In voorziening, juist gestald |         |
+| `k`     | In voorziening, neemt plek in |         |
+| `p`     | nabij voorziening             |         |
+| `x`     | buiten voorziening            |         |
 | {.data} |
 
 “In voorziening” betekent twee dingen, wat voor bepaalde {{Survey}}s geëxpliciteerd moet worden:
