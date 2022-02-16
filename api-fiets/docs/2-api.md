@@ -422,15 +422,15 @@ Op deze manier zijn {{SurveyArea}}s niet te bevragen zonder een {{Survey}} waar 
 
 Registreer en beheer ParkingFacilities en bijbehorende Sections.
 
-| HTTP-methode                                     | Type                                       | Beschrijving                                                                                           |
-| ------------------------------------------------ | ------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
-| <dfn>POST `/parkingfacilities`                   | {{ParkingFacility}}                        | Voeg een ParkingFacility toe.                                                                          |
-| <dfn>GET `/parkingfacilities`                    | {{ResultWrapper}}`<`{{ParkingFacility}}`>` | Toon bestaande ParkingFacilities.                                                                      |
-| <dfn>GET `/parkingfacilities/{id}`               | {{ParkingFacility}}                        | Toon de ParkingFacility waar {{ParkingFacility.id}} = <var>id</var>.                                   |
-| <dfn>POST `/parkingfacilities/{id}/sections`     | {{Section}}                                | Voeg een Section toe, waar {{Section.parkingFacility}} = <var>id</var>.                                |
-| <dfn>GET `/parkingfacilities/{id}/sections`      | {{ResultWrapper}}`<`{{Section}}`>`         | Toon alle Sections, waar {{Section.parkingFacility}} = <var>id</var>.                                  |
-| <dfn>GET `/parkingfacilities/{id}/sections/{id}` | {{Section}}                                | Toon de Section, waar {{Section.parkingFacility}} = <var>id₁</var> en {{Section.id}} = <var>id₂</var>. |
-| {.data def }                                     |
+| HTTP-methode                                        | Type                                       | Beschrijving                                                                                            |
+| --------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| <dfn>POST `/parkingfacilities`                      | {{ParkingFacility}}                        | Voeg een ParkingFacility toe.                                                                           |
+| <dfn>GET `/parkingfacilities`                       | {{ResultWrapper}}`<`{{ParkingFacility}}`>` | Toon bestaande ParkingFacilities.                                                                       |
+| <dfn>GET `/parkingfacilities/{id}`                  | {{ParkingFacility}}                        | Toon de ParkingFacility waar {{ParkingFacility.id}} = <var>id</var>.                                    |
+| <dfn>POST `/parkingfacilities/{id}/sections`        | {{Section}}                                | Voeg een Section toe, waar {{Section.parkingFacility}} = <var>id</var>.                                 |
+| <dfn>GET `/parkingfacilities/{id}/sections`         | {{ResultWrapper}}`<`{{Section}}`>`         | Toon alle Sections, waar {{Section.parkingFacility}} = <var>id</var>.                                   |
+| <dfn>GET `/parkingfacilities/{pfid}/sections/{sid}` | {{Section}}                                | Toon de Section, waar {{Section.parkingFacility}} = <var>pfid</var> en {{Section.id}} = <var>sid</var>. |
+| {.data def }                                        |
 
 <pre class='example json' title='POST /parkingfacilities' data-include='examples/parkingfacilities-post.json' data-include-format='text'></pre>
 <pre class='example json' title='POST /parkingfacilities/{id}/sections' data-include='examples/parkingFacilities-id-sections-post.json' data-include-format='text'></pre>
@@ -441,15 +441,15 @@ TODO: Algoritme voor combineren van onderdelen.
 
 Verkrijg gemeten aantallen fietsen in {{ParkingFacilities}} en bijbehorende {{Section}}s.
 
-| HTTP-methode                                            | Type                                              | Beschrijving                                                      |
-| ------------------------------------------------------- | ------------------------------------------------- | ----------------------------------------------------------------- |
-| <dfn>GET `/parkingfacilities/{id}/count`                | {{ResultWrapper}}`<`{{DynamicParkingFacility}}`>` | Toon alle tellingen waar {{ParkingFacility.id}} = <var>id</var>.  |
-| <dfn>GET `/parkingfacilities/{id}/latest`               | {{DynamicParkingFacility}}                        | Toon alle tellingen waar {{ParkingFacility.id}} = <var>id</var>.  |
-| <dfn>POST `/parkingfacilities/{id}/count`               | {{DynamicParkingFacility}}                        | Voeg een telling toe waar {{ParkingFacility.id}} = <var>id</var>. |
-| <dfn>GET `/parkingfacilities/{id}/sections/{id}/count`  | {{ResultWrapper}}`<`{{DynamicSection}}`>`         | Toon alle tellingen waar {{Section.id}} = <var>id₂</var>.         |
-| <dfn>GET `/parkingfacilities/{id}/sections/{id}/latest` | {{DynamicSection}}                                | Toon alle tellingen waar {{Section.id}} = <var>id₂</var>.         |
-| <dfn>POST `/parkingfacilities/{id}/sections/{id}/count` | {{DynamicSection}}                                | Voeg een telling toe waar {{Section.id}} = <var>id₂</var>.        |
-| {.data def }                                            |
+| HTTP-methode                                               | Type                                              | Beschrijving                                                      |
+| ---------------------------------------------------------- | ------------------------------------------------- | ----------------------------------------------------------------- |
+| <dfn>GET `/parkingfacilities/{id}/count`                   | {{ResultWrapper}}`<`{{DynamicParkingFacility}}`>` | Toon alle tellingen waar {{ParkingFacility.id}} = <var>id</var>.  |
+| <dfn>GET `/parkingfacilities/{id}/latest`                  | {{DynamicParkingFacility}}                        | Toon alle tellingen waar {{ParkingFacility.id}} = <var>id</var>.  |
+| <dfn>POST `/parkingfacilities/{id}/count`                  | {{DynamicParkingFacility}}                        | Voeg een telling toe waar {{ParkingFacility.id}} = <var>id</var>. |
+| <dfn>GET `/parkingfacilities/{pfid}/sections/{sid}/count`  | {{ResultWrapper}}`<`{{DynamicSection}}`>`         | Toon alle tellingen waar {{Section.id}} = <var>sid</var>.         |
+| <dfn>GET `/parkingfacilities/{pfid}/sections/{sid}/latest` | {{DynamicSection}}                                | Toon alle tellingen waar {{Section.id}} = <var>sid</var>.         |
+| <dfn>POST `/parkingfacilities/{pfid}/sections/{sid}/count` | {{DynamicSection}}                                | Voeg een telling toe waar {{Section.id}} = <var>sid</var>.        |
+| {.data def }                                               |
 
 Gebruikers van API 5 — de datastroom tussen het dataportal en de webapplicaties — zijn vooral geïnteresseerd in realtime data.
 Per {{ParkingFacility}} of {{Section}} dus slechts één resultaat, het meest recente.

@@ -38,14 +38,14 @@ Een onderzoek of inwinning die incidenteel of doorlopend in opdracht van een bep
 
 Een Survey
 
-| Eigenschap                                                | Type                     | Kardinaliteit | Beschrijving                                                                |
-| --------------------------------------------------------- | ------------------------ | ------------- | --------------------------------------------------------------------------- |
-| <dfn data-dfn-for="Survey">id                             | `string`                 | 0..1          | Een [[=ResourceIdentifier=]].                                               |
-| <dfn data-dfn-for="Survey">name                           | `string`                 | 1             | Naam van het onderzoek.                                                     |
-| <dfn data-dfn-for="Survey">authority                      | `string`                 | 1             | {{Organisation.id}} van de opdrachtgever.                                   |
-| <dfn data-dfn-for="Survey">contractors                    | `string[]`               | 1..N          | {{Organisation.id}} van de uitvoerder.                                      |
-| <dfn data-dfn-for="Survey">license                        | `string`                 | 0..1          | Licentie voor het gebruik van de data (vormvrij).                           |
-| <dfn data-dfn-for="Survey">distinguishesVehicleCategories | {{CanonicalVehicle}}`[]` | 0..N          | De voertuigtypes die voor dit onderzoek worden onderscheiden in tellingen.  |
+| Eigenschap                                                | Type                     | Kardinaliteit | Beschrijving                                                               |
+| --------------------------------------------------------- | ------------------------ | ------------- | -------------------------------------------------------------------------- |
+| <dfn data-dfn-for="Survey">id                             | `string`                 | 0..1          | Een [[=ResourceIdentifier=]].                                              |
+| <dfn data-dfn-for="Survey">name                           | `string`                 | 1             | Naam van het onderzoek.                                                    |
+| <dfn data-dfn-for="Survey">authority                      | `string`                 | 1             | {{Organisation.id}} van de opdrachtgever.                                  |
+| <dfn data-dfn-for="Survey">contractors                    | `string[]`               | 1..N          | {{Organisation.id}} van de uitvoerder.                                     |
+| <dfn data-dfn-for="Survey">license                        | `string`                 | 0..1          | Licentie voor het gebruik van de data (vormvrij).                          |
+| <dfn data-dfn-for="Survey">distinguishesVehicleCategories | {{CanonicalVehicle}}`[]` | 0..N          | De voertuigtypes die voor dit onderzoek worden onderscheiden in tellingen. |
 | {.data def }                                              |
 
 Opdrachtgever en uitvoerder zijn constant over de levensduur van de Survey.
@@ -66,10 +66,6 @@ Een Organisation representeert een opdrachtgever of een uitvoerende instantie.
 > TODO:
 > SubSurveyArea op een los tabblad.
 > Makkelijker voor verplichten kolommen, kan je ook type-kolom toevoegen...
-
-> TODO:
-> Excel --> JSON
-> Shapefile --> JSON
 
 Een Onderzoeksgebied is een geometrische afbakening, waarmee individuele stallingsvoorzieningen samen geselecteerd kunnen worden voor verdere verwerking.
 Bijvoorbeeld een stationsgebied, een strandboulevard of een uitgaansgebied.
@@ -93,7 +89,7 @@ Er is geen geadminstreerde relatie tussen onderzoeksgebieden en stallingsvoorzie
 | <dfn data-dfn-for="SurveyArea">authority    | {{Organisation.id}} (`string`)   | 1..1          | Eigenaar van dit onderzoeksgebied. Alleen deze organisatie mag wijzigingen aanbrengen aan deze sectie. |
 | <dfn data-dfn-for="SurveyArea">name         | `string[]`                       | 0..N          | Naam die de eigenaar of inwinner aan dit onderzoeksgebied geeft.                                       |
 | <dfn data-dfn-for="SurveyArea">altId        | `string[]`                       | 0..N          | Alternatieve IDs die de eigenaar of inwinner aan dit onderzoeksgebied geeft.                           |
-| <dfn data-dfn-for="Survey">surveys          | `string[]`                       | 0..N          | De {{Survey.id}} van de onderzoeken die dit data aanleveren voor dit gebied |
+| <dfn data-dfn-for="Survey">surveys          | `string[]`                       | 0..N          | De {{Survey.id}} van de onderzoeken die dit data aanleveren voor dit gebied                            |
 | {.data def}                                 |                                  |               |
 
 ## Stallingen, parkeervoorzieningen
@@ -132,18 +128,24 @@ Andersom betekent een nieuwe parkeerlocatie _wel_ dat ook de secties nieuw aange
 
 Voor historische vergelijkingen kan op basis van de geometrie en/of `altId` bepaald worden of het om (min of meer) dezelfde parkeerlocatie gaat.
 
-| Eigenschap                                          | Type                             | Kardinaliteit | Beschrijving                                                             |
-| --------------------------------------------------- | -------------------------------- | ------------- | ------------------------------------------------------------------------ |
-| <dfn data-dfn-for="ParkingFacility">id              | `string`                         | 1             | Een [[=ResourceIdentifier=]].                                            |
-| <dfn data-dfn-for="ParkingFacility">geoLocation     | GeoJSON                          | 1..1          | Geografische afbakening volgens [[rfc7946]].                             |
-| <dfn data-dfn-for="ParkingFacility">name            | `string`                         | 0..1          | Namen voor de voorziening.                                               |
-| <dfn data-dfn-for="ParkingFacility">altId           | `string[]`                       | 0..N          | Alternatieve IDs van de eigenaar of inwinner.                            |
+| Eigenschap                                           | Type                             | Kardinaliteit | Beschrijving                                                             |
+| ---------------------------------------------------- | -------------------------------- | ------------- | ------------------------------------------------------------------------ |
+| <dfn data-dfn-for="ParkingFacility">id               | `string`                         | 1             | Een [[=ResourceIdentifier=]].                                            |
+| <dfn data-dfn-for="ParkingFacility">geoLocation      | GeoJSON                          | 1..1          | Geografische afbakening volgens [[rfc7946]].                             |
+| <dfn data-dfn-for="ParkingFacility">name             | `string`                         | 0..1          | Namen voor de voorziening.                                               |
+| <dfn data-dfn-for="ParkingFacility">altId            | `string[]`                       | 0..N          | Alternatieve IDs van de eigenaar of inwinner.                            |
 | <dfn data-dfn-for="ParkingFacility">securityFeatures | {{SecurityFeature}}`[]`          | 0..N          | Beveiligingskenmerken                                                    |
-| <dfn data-dfn-for="ParkingFacility">allows          | {{Vehicle}}`[]`                  | 1..N          | Toegestane voertuigtypen voor deze parkeerlocatie.                       |
-| <dfn data-dfn-for="ParkingFacility">validFrom       | [[rfc3339]] date-time (`string`) | 0..1          | Zie <a href='#geldigheid-door-de-tijd'></a>.                             |
-| <dfn data-dfn-for="ParkingFacility">validThrough    | [[rfc3339]] date-time (`string`) | 0..1          | Zie <a href='#geldigheid-door-de-tijd'></a>.                             |
-| <dfn data-dfn-for="ParkingFacility">owner           | {{Organisation.id}}              | 0..1          | Alleen deze eigenaar mag wijzigingen aanbrengen aan deze parkeerlocatie. |
-| {.data def}                                         |
+| <dfn data-dfn-for="ParkingFacility">allows           | {{Vehicle}}`[]`                  | 1..N          | Toegestane voertuigtypen voor deze parkeerlocatie.                       |
+| <dfn data-dfn-for="ParkingFacility">validFrom        | [[rfc3339]] date-time (`string`) | 0..1          | Zie <a href='#geldigheid-door-de-tijd'></a>.                             |
+| <dfn data-dfn-for="ParkingFacility">validThrough     | [[rfc3339]] date-time (`string`) | 0..1          | Zie <a href='#geldigheid-door-de-tijd'></a>.                             |
+| <dfn data-dfn-for="ParkingFacility">owner            | {{Organisation.id}}              | 0..1          | Alleen deze eigenaar mag wijzigingen aanbrengen aan deze parkeerlocatie. |
+| {.data def}                                          |
+
+> NOTE
+> TODO: hoe maak je onderscheid in ProRail locaties (Rsd Loc 2)
+> en onze Geen-ProRail-Locatie 545-023.0-61 maaiveld.
+> mogelijkheid 'kenmerk maaiveld' vs. 'relatie authority-identifier' vs. '...'
+> deprecate altId
 
 #### Enum <dfn>`SecurityFeature`
 

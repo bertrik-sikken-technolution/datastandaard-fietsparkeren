@@ -14,9 +14,7 @@ components:
   schemas:
     Survey:
       title: Survey
-      description: |
-        nl@Een onderzoek of inwinning die incidenteel of doorlopend in opdracht van een bepaalde opdrachtgever wordt uitgevoerd door een of meerdere aannemers.
-        en@An investigation of data collection, incidentally or continiously on behalf of a client by a contractor.
+      description: An investigation of data collection, incidentally or continiously on behalf of a client by a contractor.
       type: object
       required:
         - "name"
@@ -27,32 +25,23 @@ components:
             $ref: '#/components/schemas/ResourceIdentifier'
         name: 
           type: string
-          description: |
-            en@Title of the survey
-            nl@Naam van het onderzoek
+          description: Title of the survey
         authority:
           type: string
-          description: |
-            en@{{Organisation.id}} of the client.
-            nl@{{Organisation.id}} van de opdrachtgever.
+          description: "{{Organisation.id}} of the client."
         contractors:
           type: array
           items:
             type: string
-            description: |
-              en@{{Organisation.id}} of the contractor.
-              nl@{{Organisation.id}} van de opdrachtnemer.
+            description: "{{Organisation.id}} of the contractor."
         license: 
           type: string
-          description: |
-            en@License for using the data (reference or text).
-            nl@Licentie voor het gebruik van de data (vormvrij.)
+          description: License for using the data (reference or text).
         surveyAreas:
           type: array
           items:
             type: string
-            description: |
-              en@
+            description: Survey areas contained.
         distinguishesVehicleCategories:
           type: array
           items:
@@ -67,9 +56,7 @@ components:
             $ref: '#/components/schemas/ResourceIdentifier'
         name: 
           type: string
-          description: |
-            en@Title of the organisation
-            nl@Naam van de instantie
+          description: Name of the organisation
     SurveyArea:
       type: object
       title: SurveyArea
@@ -114,9 +101,7 @@ components:
       title: VehicleState
     ResourceIdentifier:
       type: string
-      description: |
-        en@A unique identifier.
-        nl@Een URL of code die uniek één resource identificeert.
+      description: A unique identifier.
 paths:
   /test:
     get:
