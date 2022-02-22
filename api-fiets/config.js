@@ -18,6 +18,12 @@ var respecConfig = {
   github: "https://github.com/Stichting-CROW/datastandaard-fietsparkeren",
   pubDomain: "datastandaard-fietsparkeren",
   shortName: "spdp-fiets",
+  alternateFormats: [
+    {
+      label: "OpenAPI (Swagger)",
+      uri: "https://docs.crow.nl/datastandaard-fietsparkeren/api-fiets/api-desc.yml",
+    },
+  ],
   lint: {
     "no-http-props": false,
   },

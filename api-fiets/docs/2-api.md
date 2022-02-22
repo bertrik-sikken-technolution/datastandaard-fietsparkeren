@@ -20,10 +20,14 @@ _De rest van deze sectie is niet normatief._
 Als uitgangspunt geldt steeds het volgende:
 
 - de HTTP-methode GET vraagt gegevens op
-- de HTTP-methode POST voegt nieuwe gegevens toe
+- de HTTP-methode POST voegt nieuwe gegevens toe.
+
+  De response van een POST-verzoek is de beschrijving van de aangemaakte resource.
+
 - de HTTP-methode PUT updatet een bestaande resource, aangegeven via een bepaalde identifier in de URL.
 
   Bij PUT worden alleen gewijzigde kenmerken meegegeven.
+  De response van een PUT-verzoek is de beschrijving van de geüpdatete resource.
 
 ### Kardinaliteit
 
@@ -52,9 +56,7 @@ In het geval van de pilot in VeiligStallen is de base-url `https://remote.veilig
 
 ### Relaties tussen objecttypen
 
-Onderstaande <a href='#relatie-objecttypen'></a> verduidelijkt de koppelingen die er bestaan tussen de verschillende objecttypen.
-
-<figure id='relatie-objecttypen'><img src='docs/objecten.drawio.svg'><figcaption>Overzicht relaties tussen statische en dynamische gegevenselementen.</figcaption></figure>
+<a href='#relatie-objecttypen'></a> verduidelijkt de koppelingen die er bestaan tussen de verschillende objecttypen.
 
 </section>
 
@@ -115,24 +117,23 @@ Verschillende objecttypen hebben het eigenschap-paar `validFrom` (geldig vanaf) 
 
 Hierbij geldt steeds het volgende:
 
-- Een implementatie MOET een update afwijzen als de waarde {{DynamicParkingFacility.timestamp}} voortijdig is aan de waarde van {{ParkingFacility.validFrom}}.
-- Een implementatie MOET een update afwijzen als de waarde {{DynamicSection.timestamp}} voortijdig is aan de waarde van {{Section.validFrom}}.
+- Een implementatie MOET een {{Observation}} afwijzen als de waarde van `phenomenonTime.hasBeginning` voortijdig is aan de waarde van `validFrom` van de {{Observation.featureOfInterest}} (dus {{ParkingFacility.validFrom}} of {{Section.validFrom}}).
+- Een implementatie MOET een {{Observation}} afwijzen als de waarde van `phenomenonTime.hasEnd` natijdig is aan de waarde van `validThrough` van de {{Observation.featureOfInterest}} (dus {{ParkingFacility.validThrough}} of {{Section.validThrough}}).
 
-- Een implementatie MOET een update afwijzen als de waarde {{DynamicParkingFacility.timestamp}} natijdig is aan de waarde van {{ParkingFacility.validThrough}}.
-- Een implementatie MOET een update afwijzen als de waarde {{DynamicSection.timestamp}} natijdig is aan de waarde van {{Section.validThrough}}.
-
-- De wijziging van een kenmerk maakt een nieuwe instantie noodzakelijk:
+- De wijziging van een kenmerk van een {{SurveyArea}}, {{ParkingFacility}} of {{Section}} maakt een nieuwe instantie noodzakelijk:
   - Het tijdstip van de wijziging minus één is de `validThrough` van de oude instantie.
     - Vanwege de “tot en met”-betekenis, MOET er één eenheid van de meetresolutie worden afgetrokken.
     - Bijvoorbeeld: bij een seconderesolutie: - 1 seconde.
     - Bijvoorbeeld: bij een dagresolutie: - 1 dag.
   - Het tijdstip van de wijziging is de `validFrom` van de nieuwe instantie.
+- Een implementatie MAG bij een update aan `validFrom` of `validThrough` controleren of er {{Observation}}s zijn die buiten het nieuwe geldigheidsbereik vallen.
+  - Het is implementatie-afhankelijk wat er dan gebeurt.
 
 ### Geldigheid van geo-kenmerken
 
 - Een implementatie ZOU een update MOETEN afwijzen als
   de waarde van {{ParkingFacility.geoLocation}} (1) overlapt met de {{ParkingFacility.geoLocation}} (2)
-  waarbij ook de [[[#geldigheid-door-de-tijd]]] elkaar overlappen,
+  waarbij ook de <a href='#geldigheid-door-de-tijd'></a> elkaar overlappen,
   behorende bij eenzelfde {{Survey}}.
 
   - Een implementatie MAG aan de gebruiker een melding geven als dit gebeurt.
@@ -148,15 +149,15 @@ Een implementatie kan op verschillende wijzes eigenaarschap van een [[=Resource=
 - Een implementatie MAG updateverzoeken afwijzen als het niet aan eigen eisen voldoet.
 - Een implementatie ZOU updateverzoeken aan een resource MOETEN afwijzen als de eigenaar van die resource, niet het verzoek heeft verstuurd.
 
-Verschillende objecttypen hebben de eigenschap `authority` (namelijk:
+Verschillende objecttypen hebben de eigenschap `authority` of `owner` (namelijk:
 {{Survey.authority}},
 {{SurveyArea.authority}},
-{{ParkingFacility.authority}},
-{{Section.authority}}).
+{{ParkingFacility.owner}},
+{{Section.owner}}).
 
-Steeds geldt bij een resource met een `authority` het volgende:
+Steeds geldt bij een resource met een `authority` of `owner` het volgende:
 
-- Een implementatie MAG updateverzoeken accepteren als er een geldige {{Survey}} bestaat, waarvan de {{Survey.authority}} overeenkomt met de {{ParkingFacility.authority}} of {{Section.authority}}.
+- Een implementatie MAG updateverzoeken accepteren als er een geldige {{Survey}} bestaat, waarvan de {{Survey.authority}} overeenkomt met de {{ParkingFacility.owner}} of {{Section.owner}}.
 
 _De rest van deze sectie is niet normatief._
 
@@ -388,11 +389,12 @@ Registreer en beheer Surveys en SurveyAreas en leg de koppeling tussen beide.
 | HTTP-methode                  | Type                                  | Beschrijving                                                                                                 |
 | ----------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | <dfn>GET `/survey-areas`      | {{ResultWrapper}}`<`{{SurveyArea}}`>` | Toon SurveysAreas die voorkomen bij {{Survey.surveyAreas}} bij de Survey waar {{Survey.id}} = <var>id</var>. |
+| <dfn>GET `/survey-areas/{id}` | {{SurveyArea}}                        | Toon SurveysAreas die voorkomen bij {{Survey.surveyAreas}} bij de Survey waar {{Survey.id}} = <var>id</var>. |
 | <dfn>POST `/survey-areas`     | {{SurveyArea}}                        | Voeg een SurveyArea toe aan een Survey waar {{Survey.id}} = <var>id</var>.                                   |
 | <dfn>PUT `/survey-areas/{id}` | `Partial<`{{SurveyArea}}`>`           | Update de SurveyArea waar {{SurveyArea.id}} = <var>id</var>.                                                 |
 | {.data def }                  |
 
-**Standaardfilters voor <a href='#dfn-get-surveys-id-areas'>GET `/surveys/{id}/areas`</a>**
+**Standaardfilters voor <a href='#dfn-get-survey-areas-id'>GET `/survey-areas/{id}`</a>**
 
 <ul class='filter-list' data-sort>
 <li>{{orderBy}}
@@ -414,21 +416,17 @@ Registreer en beheer Surveys en SurveyAreas en leg de koppeling tussen beide.
 <pre class='example json' title='POST /surveys/{id}/areas' data-include='examples/surveys-id-areas-post.json' data-include-format='text'></pre>
 <pre class='example json' title='POST /surveys/{id}/areas' data-include='examples/surveys-id-areas-parent-post.json' data-include-format='text'></pre>
 
-<aside class='issue'>
-Op deze manier zijn {{SurveyArea}}s niet te bevragen zonder een {{Survey}} waar ze bij horen.
-</aside>
-
 ## REST-API: stallingen, parkeervoorzieningen
 
 Registreer en beheer ParkingFacilities en bijbehorende Sections.
 
 | HTTP-methode                                        | Type                                       | Beschrijving                                                                                            |
 | --------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| <dfn>POST `/parkingfacilities`                      | {{ParkingFacility}}                        | Voeg een ParkingFacility toe.                                                                           |
 | <dfn>GET `/parkingfacilities`                       | {{ResultWrapper}}`<`{{ParkingFacility}}`>` | Toon bestaande ParkingFacilities.                                                                       |
+| <dfn>POST `/parkingfacilities`                      | {{ParkingFacility}}                        | Voeg een ParkingFacility toe.                                                                           |
 | <dfn>GET `/parkingfacilities/{id}`                  | {{ParkingFacility}}                        | Toon de ParkingFacility waar {{ParkingFacility.id}} = <var>id</var>.                                    |
-| <dfn>POST `/parkingfacilities/{id}/sections`        | {{Section}}                                | Voeg een Section toe, waar {{Section.parkingFacility}} = <var>id</var>.                                 |
 | <dfn>GET `/parkingfacilities/{id}/sections`         | {{ResultWrapper}}`<`{{Section}}`>`         | Toon alle Sections, waar {{Section.parkingFacility}} = <var>id</var>.                                   |
+| <dfn>POST `/parkingfacilities/{id}/sections`        | {{Section}}                                | Voeg een Section toe, waar {{Section.parkingFacility}} = <var>id</var>.                                 |
 | <dfn>GET `/parkingfacilities/{pfid}/sections/{sid}` | {{Section}}                                | Toon de Section, waar {{Section.parkingFacility}} = <var>pfid</var> en {{Section.id}} = <var>sid</var>. |
 | {.data def }                                        |
 
@@ -437,34 +435,45 @@ Registreer en beheer ParkingFacilities en bijbehorende Sections.
 
 ## REST-API: tellingen, metingen en capaciteit
 
-TODO: Algoritme voor combineren van onderdelen.
-
-TODO: Kun je teldata alleen toevoegen per Sectie?
-Nou, {{Observation.featureOfInterest}} is makkelijk om alleen op {{Section}} te doen.
-Homogeniteit is gewenst bij Sections, maar niet verplicht.
-Wel soort van verplicht bij ProRail.
-
-ProRail: Alleen {{Observation}}s op sectieniveau.
-
 Verkrijg gemeten aantallen fietsen in {{ParkingFacilities}} en bijbehorende {{Section}}s.
 
-| HTTP-methode                                               | Type                                              | Beschrijving                                                      |
-| ---------------------------------------------------------- | ------------------------------------------------- | ----------------------------------------------------------------- |
-| <dfn>GET `/parkingfacilities/{id}/count`                   | {{ResultWrapper}}`<`{{DynamicParkingFacility}}`>` | Toon alle tellingen waar {{ParkingFacility.id}} = <var>id</var>.  |
-| <dfn>GET `/parkingfacilities/{id}/latest`                  | {{DynamicParkingFacility}}                        | Toon alle tellingen waar {{ParkingFacility.id}} = <var>id</var>.  |
-| <dfn>POST `/parkingfacilities/{id}/count`                  | {{DynamicParkingFacility}}                        | Voeg een telling toe waar {{ParkingFacility.id}} = <var>id</var>. |
-| <dfn>GET `/parkingfacilities/{pfid}/sections/{sid}/count`  | {{ResultWrapper}}`<`{{DynamicSection}}`>`         | Toon alle tellingen waar {{Section.id}} = <var>sid</var>.         |
-| <dfn>GET `/parkingfacilities/{pfid}/sections/{sid}/latest` | {{DynamicSection}}                                | Toon alle tellingen waar {{Section.id}} = <var>sid</var>.         |
-| <dfn>POST `/parkingfacilities/{pfid}/sections/{sid}/count` | {{DynamicSection}}                                | Voeg een telling toe waar {{Section.id}} = <var>sid</var>.        |
-| {.data def }                                               |
+| HTTP-methode                                                            | Type                                           | Beschrijving                                                                                                                              |
+| ----------------------------------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| <dfn>GET `/parkingfacilities/{pf_id}/observations`                      | {{ResultWrapper}}`<`{{Observation}}`>`         | Toon alle tellingen waar {{Observation.featureOfInterest}} = <var>pf_id</var>.                                                            |
+| <dfn>GET `/parkingfacilities/{pf_id}/capacity/latest`                   | {{Observation}}`<`{{CapacityMeasurement}}`>`   | Toon meest actuele capaciteitstelling ({{Observation.observedProperty}} = `c`) waar {{Observation.featureOfInterest}} = <var>pf_id</var>. |
+| <dfn>GET `/parkingfacilities/{pf_id}/occupation/latest`                 | {{Observation}}`<`{{OccupationMeasurement}}`>` | Toon meest actuele bezettingstelling ({{Observation.observedProperty}} = `b`) waar {{Observation.featureOfInterest}} = <var>pf_id</var>.  |
+| <dfn>POST `/parkingfacilities/{pf_id}/observations`                     | {{Observation}}`[]`                            | Voeg tellingen toe waar {{Observation.featureOfInterest}} = <var>pf_id</var>.                                                             |
+| <dfn>GET `/parkingfacilities/{pf_id}/sections/{s_id}/observations`      | {{ResultWrapper}}`<`{{Observation}}`>`         | Toon alle tellingen waar {{Observation.featureOfInterest}} = <var>s_id</var>.                                                             |
+| <dfn>GET `/parkingfacilities/{pf_id}/sections/{s_id}/capacity/latest`   | {{Observation}}`<`{{CapacityMeasurement}}`>`   | Toon meest actuele capaciteitstelling ({{Observation.observedProperty}} = `c`) waar {{Observation.featureOfInterest}} = <var>s_id</var>.  |
+| <dfn>GET `/parkingfacilities/{pf_id}/sections/{s_id}/occupation/latest` | {{Observation}}`<`{{OccupationMeasurement}}`>` | Toon meest actuele bezettingstelling ({{Observation.observedProperty}} = `b`) waar {{Observation.featureOfInterest}} = <var>s_id</var>.   |
+| <dfn>POST `/parkingfacilities/{pf_id}/sections/{s_id}/observations`     | {{Observation}}`[]`                            | Voeg tellingen toe waar {{Observation.featureOfInterest}} = <var>s_id</var>.                                                              |
+| {.data def }                                                            |
 
 Gebruikers van API 5 — de datastroom tussen het dataportal en de webapplicaties — zijn vooral geïnteresseerd in realtime data.
 Per {{ParkingFacility}} of {{Section}} dus slechts één resultaat, het meest recente.
-Voor deze gebruikers zijn de endpoints
-<a href='#dfn-get-parkingfacilities-id-latest'>GET `/parkingfacilities/{id}/latest`</a>
-en
-<a href='#dfn-get-parkingfacilities-id-sections-id-latest'>GET `/parkingfacilities/{id}/sections/{id}/latest`</a>
-gemaakt.
+Voor deze gebruikers zijn de `/latest` endpoints gemaakt.
+
+Merk op dat, ook al onderscheidt een {{Survey}} slechts bepaalde {{CanonicalVehicle}}s, bij het insturen van metingen wordt altijd een uitgevuld {{Vehicle}}-object meegegeven.
+
+### De capaciteit of bezetting berekenen van een `ParkingFacility` o.b.v. diens `Section`s
+
+{{Observation}}s op {{ParkingFacility}}-niveau kunnen berekend worden aan de hand van {{Observation}}s van bijbehorende {{Section}}s.
+
+1. Verzamel alle {{Observation}}s waarvan de {{Observation.featureOfInterest}} een {{Section}} is waarvan de {{Section.parkingFacility}} is die berekend wordt.
+1. Agregeer die per tijdstip en verdeel die per soort van de meting.
+   Een implementatie MAG ook alleen de meest recente Observation synthetiseren.
+
+   1. Voor capaciteitsmetingen:
+
+      1. {{CapacityMeasurement.parkingCapacity}}: waarde van de som over alle voorgenoemde `Observation`s.
+      1. {{CapacityMeasurement.capacityPerParkingSpaceType}}: stel deze set samen aan de hand van de gesommeerde waarden van de {{CapacityPerParkingSpaceType}} bij elke `Observation`.
+
+   1. Voor bezettingsmetingen op een tijdstip:
+      1. {{OccupationMeasurement.totalParked}}: waarde van de som over alle voorgenoemde `Observation`s.
+      1. {{OccupationMeasurement.occupiedSpaces}}: waarde van de som over alle voorgenoemde `Observation`s.
+      1. {{OccupationMeasurement.parkedByVehicleType}}: waarde van de gesommeerde set over alle voorgenoemde `Observation`s.
+      1. {{OccupationMeasurement.vacantSpaces}}: waarde van de som over alle voorgenoemde `Observation`s.
+      1. {{OccupationMeasurement.basedOffCapacity}}: verwijst naar een bestaande of gesynthetiseerde capaciteitsmeting.
 
 <pre class='example json' title='GET /parkingfacilities/{id}/count' data-include='examples/parkingfacilities-id-count-get.json' data-include-format='text'></pre>
 <pre class='example json' title='GET /parkingfacilities/{id}/sections/{id}/count' data-include='examples/parkingfacilities-id-sections-id-count.json' data-include-format='text'></pre>

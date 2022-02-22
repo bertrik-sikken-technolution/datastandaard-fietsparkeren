@@ -1,0 +1,4 @@
+- Observations now use an inline measurement object 
+- AltId renamed to LocalId (aligned with NEN 3610)
+- SecurityFeatures renamed to LocationFeatureType, to provide for less-security-related feature specifications.
+  

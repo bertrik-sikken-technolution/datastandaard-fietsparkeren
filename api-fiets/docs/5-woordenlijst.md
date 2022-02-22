@@ -7,7 +7,7 @@
 <dd>Het concept van een fiets is bijv. niet een bron in dit informatiemodel.
 
 <dt><dfn>ResourceIdentifier
-<dd>Een URL, een code (zoals een CBS-gemeentecode) of een UUID/GUID die uniek één Resource identificeert.
+<dd>Een URL, een samgenstelde code of een UUID/GUID die uniek één Resource identificeert.
 
 <dt><dfn>Request
 <dd>Een verzoek, gebruikelijk van [[=User Agent=]] naar een Server. 
