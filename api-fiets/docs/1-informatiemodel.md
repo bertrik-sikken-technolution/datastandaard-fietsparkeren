@@ -13,7 +13,7 @@ Het omvat definities, gebruik en API’s voor:
 <figcaption>Overzicht relaties tussen statische en dynamische gegevenselementen (aanklikbaar).</figcaption>
 </figure>
 
-Dit is ook als <a href='api-desc.yaml'>OpenAPI (Swagger) specificatie</a> beschikbaar.
+Dit is ook als <a href='openapi.json'>OpenAPI (Swagger) specificatie</a> beschikbaar.
 
 ## Onderzoeken en inwinningen
 

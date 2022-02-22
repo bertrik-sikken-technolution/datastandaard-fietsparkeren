@@ -455,6 +455,9 @@ Voor deze gebruikers zijn de `/latest` endpoints gemaakt.
 
 Merk op dat, ook al onderscheidt een {{Survey}} slechts bepaalde {{CanonicalVehicle}}s, bij het insturen van metingen wordt altijd een uitgevuld {{Vehicle}}-object meegegeven.
 
+<pre class='example json' title='GET /parkingfacilities/{id}/count' data-include='examples/parkingfacilities-id-count-get.json' data-include-format='text'></pre>
+<pre class='example json' title='GET /parkingfacilities/{id}/sections/{id}/count' data-include='examples/parkingfacilities-id-sections-id-count.json' data-include-format='text'></pre>
+
 ### De capaciteit of bezetting berekenen van een `ParkingFacility` o.b.v. diens `Section`s
 
 {{Observation}}s op {{ParkingFacility}}-niveau kunnen berekend worden aan de hand van {{Observation}}s van bijbehorende {{Section}}s.
@@ -475,8 +478,11 @@ Merk op dat, ook al onderscheidt een {{Survey}} slechts bepaalde {{CanonicalVehi
       1. {{OccupationMeasurement.vacantSpaces}}: waarde van de som over alle voorgenoemde `Observation`s.
       1. {{OccupationMeasurement.basedOffCapacity}}: verwijst naar een bestaande of gesynthetiseerde capaciteitsmeting.
 
-<pre class='example json' title='GET /parkingfacilities/{id}/count' data-include='examples/parkingfacilities-id-count-get.json' data-include-format='text'></pre>
-<pre class='example json' title='GET /parkingfacilities/{id}/sections/{id}/count' data-include='examples/parkingfacilities-id-sections-id-count.json' data-include-format='text'></pre>
+Hierbij geldt ook het volgende:
+
+- Een daadwerkelijke meting en een gesynthetiseerde volgens bovenstaande stappenplan, HOEVEN NIET overeen te komen.
+  Verschillen kunnen door meettechnieken of tijdsverloop of andere omstandigheden voorkomen.
+  De gesynthetiseerde Observation is tenslotte niet daadwerklijk gemeten.
 
 <aside class='issue'>
 TODO:

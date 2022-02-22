@@ -21,7 +21,7 @@ var respecConfig = {
   alternateFormats: [
     {
       label: "OpenAPI (Swagger)",
-      uri: "https://docs.crow.nl/datastandaard-fietsparkeren/api-fiets/api-desc.yml",
+      uri: "https://docs.crow.nl/datastandaard-fietsparkeren/api-fiets/openapi.json",
     },
   ],
   lint: {
