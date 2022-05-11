@@ -16,12 +16,12 @@ De CROW datastandaard fietsparkeren bestaat uit zes onderdelen:
 1. [Gebruiksvriendelijke API][fp-api], definieert een REST-API voor eenvoudige uitwisseling.
 1. [Inmetings- en tellingsprotocol][fp-protocol], defineert een protocol voor inmeten van stallingssecties en de wijze van telling van geparkeerde fietsen.
 
-[fp-cm]: https://docs.crow.nl/fietspark/cm
-[fp-im]: https://docs.crow.nl/fietspark/im
-[fp-protocol]: https://docs.crow.nl/fietspark/protocol
-[fp-rdf]: https://docs.crow.nl/fietspark/rdf
-[fp-tabular]: https://docs.crow.nl/fietspark/tabular
-[fp-api]: https://docs.crow.nl/fietspark/rest-api
+[fp-cm]: https://docs.crow.nl/datastandaard-fietsparkeren/cm
+[fp-im]: https://docs.crow.nl/datastandaard-fietsparkeren/im
+[fp-protocol]: https://docs.crow.nl/datastandaard-fietsparkeren/protocol
+[fp-rdf]: https://docs.crow.nl/datastandaard-fietsparkeren/rdf
+[fp-tabular]: https://docs.crow.nl/datastandaard-fietsparkeren/tabular
+[fp-api]: https://docs.crow.nl/datastandaard-fietsparkeren/rest-api
 
 </details>
 
