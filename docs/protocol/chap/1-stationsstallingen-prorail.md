@@ -11,7 +11,7 @@ Het beschrijft hoe gebieden ingemeten moeten worden, welke typen voertuigen word
 
 ## Naamgeving ParkingLocation
 
-De naam (`s:name`) gegeven aan een voorziening (`fp:ParkingLocation`) bestaat uit:
+<!-- De naam (`s:name`) gegeven aan een voorziening (`fp:ParkingLocation`) bestaat uit:
 
 - ProRail Referentiesysteem Hectometerpunt [(Geocode)][geocode]
 - "-"
@@ -28,7 +28,7 @@ De naam (`s:name`) gegeven aan een voorziening (`fp:ParkingLocation`) bestaat ui
 }
 ```
 
-</aside>
+</aside> -->
 
 ## Invulinstructie tabel
 
