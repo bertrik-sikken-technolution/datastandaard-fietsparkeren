@@ -4,5 +4,5 @@
   "vp": "https://data.velopark.be/openvelopark/vocabulary#",
   "vpt": "https://data.velopark.be/openvelopark/terms#",
   "time": "http://www.w3.org/2006/time#",
-  "fp": "https://data.crow.nl/fietspark/def#"
+  "fp": "https://data.crow.nl/datastd-fietspark/def#"
 }

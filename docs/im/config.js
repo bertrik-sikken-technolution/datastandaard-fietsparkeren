@@ -1,12 +1,11 @@
 var respecConfig = {
-  specType: "conceptueel model",
+  specType: "informatiemodel",
   specStatus: "WD",
   imprint: "crow-fietsberaad",
   hypothesisComments: true,
   license: "cc-by",
   github: "https://github.com/Stichting-CROW/datastandaard-fietsparkeren",
-  pubDomain: "datastandaard-fietsparkeren",
-  shortName: "datastandaard-fietsparkeren/cm",
+  shortName: "datastandaard-fietsparkeren/im",
   lint: {
     "no-http-props": false,
     "no-unused-dfns": false,

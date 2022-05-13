@@ -9,7 +9,7 @@
                 CROW datastandaard fietsparkeren
             </text>
         </g>
-        <a xlink:href="https://docs.crow.nl/fietspark/cm">
+        <a xlink:href="https://docs.crow.nl/datastandaard-fietsparkeren/cm">
             <rect x="40" y="40" width="120" height="60" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)"/>
             <g transform="translate(-0.5 -0.5)">
                 <switch>
@@ -46,7 +46,7 @@
                 </text>
             </switch>
         </g>
-        <a xlink:href="https://docs.crow.nl/fietspark/im">
+        <a xlink:href="https://docs.crow.nl/datastandaard-fietsparkeren/im">
             <rect x="40" y="160" width="120" height="60" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)"/>
             <g transform="translate(-0.5 -0.5)">
                 <switch>
@@ -65,7 +65,7 @@
                 </switch>
             </g>
         </a>
-        <a xlink:href="https://docs.crow.nl/fietspark/rdf">
+        <a xlink:href="https://docs.crow.nl/datastandaard-fietsparkeren/rdf">
             <rect x="160" y="280" width="120" height="60" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)"/>
             <g transform="translate(-0.5 -0.5)">
                 <switch>
@@ -86,7 +86,7 @@
         </a>
         <path d="M 160 430 L 110 430 Q 100 430 100 420 L 100 226.37" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10"/>
         <path d="M 100 221.12 L 103.5 228.12 L 100 226.37 L 96.5 228.12 Z" fill="rgb(0, 0, 0)" stroke="rgb(0, 0, 0)" stroke-miterlimit="10"/>
-        <a xlink:href="https://docs.crow.nl/fietspark/tabular">
+        <a xlink:href="https://docs.crow.nl/datastandaard-fietsparkeren/tabular">
             <rect x="160" y="400" width="120" height="60" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)"/>
             <g transform="translate(-0.5 -0.5)">
                 <switch>
@@ -107,7 +107,7 @@
         </a>
         <path d="M 160 550 L 110 550 Q 100 550 100 540 L 100 226.37" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10"/>
         <path d="M 100 221.12 L 103.5 228.12 L 100 226.37 L 96.5 228.12 Z" fill="rgb(0, 0, 0)" stroke="rgb(0, 0, 0)" stroke-miterlimit="10"/>
-        <a xlink:href="https://docs.crow.nl/fietspark/rest-api">
+        <a xlink:href="https://docs.crow.nl/datastandaard-fietsparkeren/rest-api">
             <rect x="160" y="520" width="120" height="60" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)"/>
             <g transform="translate(-0.5 -0.5)">
                 <switch>
@@ -126,7 +126,7 @@
                 </switch>
             </g>
         </a>
-        <a xlink:href="https://docs.crow.nl/fietspark/protocol">
+        <a xlink:href="https://docs.crow.nl/datastandaard-fietsparkeren/protocol">
             <rect x="360" y="40" width="120" height="60" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)"/>
             <g transform="translate(-0.5 -0.5)">
                 <switch>

@@ -14,3 +14,4 @@ When using CSV files, each column layouts MUST belong in a different file.
 
 The tabular formats differ strongly in their native (and naïve) support for cell-level datatypes.
 Any exchange format MAY only support the string datatype for all values.
+For date fields, [[rfc2822]] SHOULD be followed; best-effort parsing is allowed.

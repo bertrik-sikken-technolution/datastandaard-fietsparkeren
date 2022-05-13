@@ -4,18 +4,53 @@
 
 <aside class="advisement">Unfinished.</aside>
 
+| Column                   | Relates to | Description                                                |
+| ------------------------ | ---------- | ---------------------------------------------------------- |
+| surveyarea_id            |
+| surveyarea_localId       |            | A designation defined by the authority.                    |
+| surveyarea_geolocation   |
+| surveyarea_parentId      |
+| surveyarea_parentLocalId |
+| surveyarea_validFrom     |
+| surveyarea_validThrough  |            | If filled in, last day for which measurements are allowed. |
+| surveyarea_authorityId   |            | Opvragen bij platform.                                     |
+| surveyarea_name          |
+| ...                      |            | Extra attributes, as defined by authority.                 |
+
+## Layer `ParkingLocation_static`
+
+<aside class="advisement">Unfinished.</aside>
+
+| Column                              | Relates to | Description                                                                               |
+| ----------------------------------- | ---------- | ----------------------------------------------------------------------------------------- |
+| parkinglocation_id                  | ...        | Identifier                                                                                |
+| parkinglocation_localId             |
+| parkinglocation_geolocation         |
+| parkinglocation_name                |
+| parkinglocation_locationFeatureType |            | Space delimited list of localnames of fp:LocationFeatureTypes (`Outdoor`, `Guarded`, ...) |
+| parkinglocation_validFrom           |
+| parkinglocation_validThrough        |
+| parkinglocation_authority           |
+| ...                                 |            | Extra attributes, as defined by authority.                                                |
+
+## Layer `Section_static`
+
+<aside class="advisement">Unfinished.</aside>
+
 | Column                    | Relates to | Description |
 | ------------------------- | ---------- | ----------- |
-| surveyarea_id             |
-| surveyarea_localId        |
-| surveyarea_geolocation    |
-| surveyarea_parentId       |
-| surveyarea_parentLocalId  |
-| surveyarea_validFrom      |
-| surveyarea_validThrough   |
-| surveyarea_authority      |
-| surveyarea_name           |
-| surveyarea_surveyAreaType |
+| section_id                |
+| section_localId           |
+| parkinglocation_id        |
+| parkinglocation_localId   |
+| section_name              |
+| section_layout            |
+| section_geolocation       |
+| section_parkingSystemType |
+| section_vehicleOwnerType  |
+| section_level             |
+| section_validFrom         |
+| section_validThrough      |
 
 ## Layer `Survey`
 
@@ -36,41 +71,6 @@ the dataset license,
 what measurement protocol was used, and
 which vehicle categories were used
 cannot be indicated in the tabular exchange format.
-
-## Layer `ParkingFacility_static`
-
-<aside class="advisement">Unfinished.</aside>
-
-| Column                              | Relates to | Description |
-| ----------------------------------- | ---------- | ----------- |
-| parkingfacility_id                  | ...        | Identifier  |
-| parkingfacility_localId             |
-| parkingfacility_owner               |
-| parkingfacility_geolocation         |
-| parkingfacility_name                |
-| parkingfacility_locationFeatureType |
-| parkingfacility_validFrom           |
-| parkingfacility_validThrough        |
-| parkingfacility_authority           |
-
-## Layer `Section_static`
-
-<aside class="advisement">Unfinished.</aside>
-
-| Column                    | Relates to | Description |
-| ------------------------- | ---------- | ----------- |
-| section_id                |
-| section_localId           |
-| parkingfacility_id        |
-| parkingfacility_localId   |
-| section_name              |
-| section_layout            |
-| section_geolocation       |
-| section_parkingSystemType |
-| section_vehicleOwnerType  |
-| section_level             |
-| section_validFrom         |
-| section_validThrough      |
 
 ## Layer `DynamicSection`
 
