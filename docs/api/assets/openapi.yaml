@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
-  title: FastAPI
-  version: 0.1.0
+  title: API CROW Datastandaard
+  version: 0.0.0
 servers:
   - url: https://remote.veiligstallenontwikkel.nl/rest/api/v2
 paths:
