@@ -844,8 +844,8 @@ components:
     ParkingFacility:
       title: ParkingFacility
       required:
-        - parent
         - authority
+        - name
       type: object
       properties:
         id:
@@ -853,9 +853,6 @@ components:
           type: string
         geoLocation:
           $ref: '#/components/schemas/GeoShape'
-        surveyArea:
-          title: SurveyArea
-          type: string
         validFrom:
           title: Validfrom
           type: string
@@ -873,6 +870,8 @@ components:
         localId:
           title: LocalId
           type: string
+        allows:
+          $ref: '#/components/schemas/Vehicle'
         features:
           title: SurveyAreaType
           uniqueItems: true
@@ -883,14 +882,13 @@ components:
               - lockerService
               - personnelSupervision
               - electronicAccess
-              - personnelSupervision
               - indoor
               - surfaceParking
           default: []
     Section:
       title: Section
       required:
-        - parent
+        - parkingFacility
         - authority
       type: object
       properties:
@@ -919,6 +917,28 @@ components:
         localId:
           title: LocalId
           type: string
+        level:
+          title: Level
+          type: integer
+        parkingSystemType:
+          title: ParkingSystemType
+          type: string
+          description: r = rek, o = etagerek onder, b = etagerek boven, n = nietje, x = geen voorziening
+    Vehicle:
+      title: Vehicle
+      properties:
+        type:
+          title: Type
+          type: string
+          enum:
+            - f
+            - c
+            - s
+            - b
+            - m
+            - g
+            - a
+          description: Vehicle definition (f = fiets, c = bakfiets, s = snorfiets, b = bromfiets, m = motorfiets, g = gehandicaptenvoertuig, a = anders)
     GeoShape:
       title: GeoShape
       properties:
