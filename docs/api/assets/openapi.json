@@ -615,18 +615,18 @@
         }
       }
     },
-    "/parking-facilities": {
+    "/parking-locations": {
       "post": {
         "tags": [
-          "parking facilities"
+          "parking locations"
         ],
-        "summary": "Add Parking facility",
-        "operationId": "add_parking_facility_areas_post",
+        "summary": "Add Parking location",
+        "operationId": "add_parking_location_post",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ParkingFacility"
+                "$ref": "#/components/schemas/ParkingLocation"
               }
             }
           },
@@ -638,7 +638,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SurveyArea"
+                  "$ref": "#/components/schemas/ParkingLocation"
                 }
               }
             }
@@ -660,10 +660,10 @@
       },
       "get": {
         "tags": [
-          "parking facilities"
+          "parking locations"
         ],
-        "summary": "All Parking Facilities",
-        "operationId": "all_parking-facilities_get",
+        "summary": "All Parking locations",
+        "operationId": "all_parking-locations_get",
         "parameters": [
           {
             "required": false,
@@ -763,21 +763,21 @@
         }
       }
     },
-    "/parking-facilities/{parkingFacility_id}": {
+    "/parking-locations/{parkingLocation_id}": {
       "get": {
         "tags": [
-          "parking facilities"
+          "parking locations"
         ],
-        "summary": "Get Parking Facility",
-        "operationId": "get_parkingFacility_parking_facilities__parkingFacility_id__get",
+        "summary": "Get Parking Locatio",
+        "operationId": "get_parkingLocation_parking_locations__parkingLocation_id__get",
         "parameters": [
           {
             "required": true,
             "schema": {
-              "title": "Parking Facility Id",
+              "title": "Parking location Id",
               "type": "string"
             },
-            "name": "parkingFacility_id",
+            "name": "parkingLocation_id",
             "in": "path"
           }
         ],
@@ -787,7 +787,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ParkingFacility"
+                  "$ref": "#/components/schemas/ParkingLocation"
                 }
               }
             }
@@ -809,18 +809,18 @@
       },
       "put": {
         "tags": [
-          "parking facilities"
+          "parking locations"
         ],
-        "summary": "Update Parking Facility",
-        "operationId": "update_parkingFacility_parking_facilities__parkingFacility_id__put",
+        "summary": "Update Parking Location",
+        "operationId": "update_parkingLocation_parking_locations__parkingLocation_id__put",
         "parameters": [
           {
             "required": true,
             "schema": {
-              "title": "Parkingfacility Id",
+              "title": "ParkingLocation Id",
               "type": "string"
             },
-            "name": "parkingFacility_id",
+            "name": "parkingLocation_id",
             "in": "path"
           }
         ],
@@ -828,7 +828,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ParkingFacility"
+                "$ref": "#/components/schemas/ParkingLocation"
               }
             }
           },
@@ -840,7 +840,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ParkingFacility"
+                  "$ref": "#/components/schemas/ParkingLocation"
                 }
               }
             }
@@ -1009,21 +1009,21 @@
         }
       }
     },
-    "/parking-facilities/{parkingFacility_id}/sections": {
+    "/parking-locations/{parkingLocation_id}/sections": {
       "get": {
         "tags": [
           "sections"
         ],
-        "summary": "Get Sections for Parking facility",
-        "operationId": "get_section_post_for_parking_facility",
+        "summary": "Get Sections for Parking Location",
+        "operationId": "get_section_post_for_parking_location",
         "parameters": [
           {
             "required": true,
             "schema": {
-              "title": "Parking Facility Id",
+              "title": "Parking Location Id",
               "type": "string"
             },
-            "name": "parkingFacility_id",
+            "name": "parkingLocation_id",
             "in": "path"
           }
         ],
@@ -1078,7 +1078,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ParkingFacility"
+                  "$ref": "#/components/schemas/Section"
                 }
               }
             }
@@ -1316,8 +1316,8 @@
           }
         }
       },
-      "ParkingFacility": {
-        "title": "ParkingFacility",
+      "ParkingLocation": {
+        "title": "ParkingLocation",
         "required": [
           "authority",
           "name"
@@ -1377,7 +1377,7 @@
       "Section": {
         "title": "Section",
         "required": [
-          "parkingFacility",
+          "parkingLocation",
           "authority"
         ],
         "type": "object",
@@ -1389,8 +1389,8 @@
           "geoLocation": {
             "$ref": "#/components/schemas/GeoShape"
           },
-          "parkingFacility": {
-            "title": "ParkingFacility",
+          "parkingLocation": {
+            "title": "ParkingLocation",
             "type": "string"
           },
           "validFrom": {
